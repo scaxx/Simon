@@ -20,15 +20,26 @@ struct Jugador{
     bool estado;
 };    
 
-Jugador jugadores[MAX_JUGADORES];
+struct Juego {
+    Jugador jugadores[MAX_JUGADORES];
+    int cant_jugadores = 0;
+};
 
 
 // ****************************************************
 
+Juego Simon;
 
 // ****************** Prototipos de Funciones y Procedimientos ************
 
-Jugador crear_jugador(Jugador &j){
+Jugador crear_jugador(){
+
+    if(Simon.cant_jugadores >= MAX_JUGADORES) {
+        cout << "No se pueden agregar más jugadores." << endl;
+        return;
+    }
+
+    Jugador j;
     system("clear");
     //cin.ignore();
 
@@ -78,7 +89,7 @@ void menu() {
 int main () {
     Jugador jugador;
 
-    crear_jugador(jugador);
+    crear_jugador();
 
     cout << "Datos: " << endl;
     cout << "Alias: " << jugador.alias << endl;
