@@ -22,7 +22,6 @@ struct Juego {
     Jugador jugadores[MAX_JUGADORES];
     int cantJugadores=0;
 };
-// holaaaa
 
 
 // ****************************************************
