@@ -18,20 +18,17 @@ struct Jugador{
     Fecha fecha_nacimiento;
     bool estado;
 };    
-struct Juego {
-    Jugador jugadores[MAX_JUGADORES];
-    int cantJugadores=0;
-};
 
+Jugador jugadores[MAX_JUGADORES];
 
 
 // ****************************************************
 
+Juego Simon;
 
 // ****************** Prototipos de Funciones y Procedimientos ************
 
-Jugador crear_jugador(){
-    Jugador j;
+Jugador crear_jugador(Jugador &j){
     system("clear");
     //cin.ignore();  por si lo necesitamos , nos dio error congela el programa
 
@@ -91,9 +88,15 @@ void imprimirJugador(Jugador j) {
 int main () {
     menu();
     Jugador jugador;
-    crear_jugador();
-    imprimirJugador(jugador); 
-  
+
+    crear_jugador(jugador);
+
+    cout << "Datos: " << endl;
+    cout << "Alias: " << jugador.alias << endl;
+    cout << "Nombre: " << jugador.nombre << endl;
+    cout << "Apellido: " << jugador.apellido << endl;
+    cout << "Fecha: " << jugador.fecha_nacimiento.dia << " del mes " << jugador.fecha_nacimiento.mes << " del año " << jugador.fecha_nacimiento.anio << endl;
+
     return 0;
 }
 
