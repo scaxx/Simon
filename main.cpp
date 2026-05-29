@@ -19,8 +19,11 @@ struct Jugador{
     Fecha fecha_nacimiento;
     bool estado;
 };    
+struct Juego {
+    Jugador jugadores[MAX_JUGADORES];
+    int cantJugadores=0;
+};
 
-Jugador jugadores[MAX_JUGADORES];
 
 
 // ****************************************************
@@ -28,9 +31,10 @@ Jugador jugadores[MAX_JUGADORES];
 
 // ****************** Prototipos de Funciones y Procedimientos ************
 
-Jugador crear_jugador(Jugador &j){
+Jugador crear_jugador(){
+    Jugador j;
     system("clear");
-    //cin.ignore();
+    //cin.ignore();  por si lo necesitamos , nos dio error congela el programa
 
     cout << "Ingrese su alias: ";
     getline(cin, j.alias); 
@@ -57,8 +61,10 @@ Jugador crear_jugador(Jugador &j){
     cin >> j.fecha_nacimiento.anio;
     cin.ignore();
     system("clear");
+    j.estado = true;
     return j;
-}
+
+};
 
 
 void menu() {
@@ -70,21 +76,25 @@ void menu() {
     cout << "   4. Salir" << endl;
     cout << ">> ";
 }
-
-
+// IMPRIMIR JUGADOR
+void imprimirJugador(Jugador j) {
+  
+    cout << "Alias: " << j.alias << endl;
+    cout << "Nombre: " <<j.nombre << endl;
+    cout << "Apellido: " << j.apellido << endl;
+    cout << "Fecha de nacimiento: " << endl << "Día" << j.fecha_nacimiento.dia << endl;
+    cout << "Mes:" << j.fecha_nacimiento.mes << endl;
+    cout << "Año:" << j.fecha_nacimiento.mes << endl;
+};
 
 // ************************************************************************
 
 int main () {
     Jugador jugador;
 
-    crear_jugador(jugador);
-
-    cout << "Datos: " << endl;
-    cout << "Alias: " << jugador.alias << endl;
-    cout << "Nombre: " << jugador.nombre << endl;
-    cout << "Apellido: " << jugador.apellido << endl;
-    cout << "Fecha: " << jugador.fecha_nacimiento.dia << " del mes " << jugador.fecha_nacimiento.mes << " del año " << jugador.fecha_nacimiento.anio << endl;
+    crear_jugador();
+    imprimirJugador; 
+  
 
     return 0;
 }
