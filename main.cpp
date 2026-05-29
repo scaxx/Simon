@@ -67,7 +67,6 @@ void menu() {
 // ************************************************************************
 
 int main () {
-    return 0;
     Jugador jugador;
 
     crear_jugador(jugador);
@@ -77,6 +76,8 @@ int main () {
     cout << "Nombre: " << jugador.nombre << endl;
     cout << "Apellido: " << jugador.apellido << endl;
     cout << "Fecha: " << jugador.fecha_nacimiento.dia << " de " << jugador.fecha_nacimiento.mes << " del año " << jugador.fecha_nacimiento.anio << endl;
+
+    return 0;
 }
 
 
