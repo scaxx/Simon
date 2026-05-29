@@ -5,7 +5,6 @@ using namespace std;
 
 
 /* JUEGO SIMÓN */
-
 // ****************** Estructuras *********************
 struct Fecha{
     int dia;
@@ -66,7 +65,7 @@ Jugador crear_jugador(){
 
 };
 
-
+//MENU
 void menu() {
     cout << "Bienvenidos al Juego SIMON." << endl;
     cout << "Ingrese una de las siguientes opciones: " << endl;
@@ -90,12 +89,11 @@ void imprimirJugador(Jugador j) {
 // ************************************************************************
 
 int main () {
+    menu();
     Jugador jugador;
-
     crear_jugador();
-    imprimirJugador; 
+    imprimirJugador(jugador); 
   
-
     return 0;
 }
 
