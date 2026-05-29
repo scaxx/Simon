@@ -5,7 +5,6 @@ using namespace std;
 
 
 /* JUEGO SIMÓN */
-
 // ****************** Estructuras *********************
 struct Fecha{
     int dia;
@@ -20,10 +19,7 @@ struct Jugador{
     bool estado;
 };    
 
-struct Juego {
-    Jugador jugadores[MAX_JUGADORES];
-    int cant_jugadores = 0;
-};
+Jugador jugadores[MAX_JUGADORES];
 
 
 // ****************************************************
@@ -32,16 +28,9 @@ Juego Simon;
 
 // ****************** Prototipos de Funciones y Procedimientos ************
 
-Jugador crear_jugador(){
-
-    if(Simon.cant_jugadores >= MAX_JUGADORES) {
-        cout << "No se pueden agregar más jugadores." << endl;
-        return;
-    }
-
-    Jugador j;
+Jugador crear_jugador(Jugador &j){
     system("clear");
-    //cin.ignore();
+    //cin.ignore();  por si lo necesitamos , nos dio error congela el programa
 
     cout << "Ingrese su alias: ";
     getline(cin, j.alias); 
@@ -68,10 +57,12 @@ Jugador crear_jugador(){
     cin >> j.fecha_nacimiento.anio;
     cin.ignore();
     system("clear");
+    j.estado = true;
     return j;
-}
 
+};
 
+//MENU
 void menu() {
     cout << "Bienvenidos al Juego SIMON." << endl;
     cout << "Ingrese una de las siguientes opciones: " << endl;
@@ -81,15 +72,24 @@ void menu() {
     cout << "   4. Salir" << endl;
     cout << ">> ";
 }
-
-
+// IMPRIMIR JUGADOR
+void imprimirJugador(Jugador j) {
+  
+    cout << "Alias: " << j.alias << endl;
+    cout << "Nombre: " <<j.nombre << endl;
+    cout << "Apellido: " << j.apellido << endl;
+    cout << "Fecha de nacimiento: " << endl << "Día" << j.fecha_nacimiento.dia << endl;
+    cout << "Mes:" << j.fecha_nacimiento.mes << endl;
+    cout << "Año:" << j.fecha_nacimiento.mes << endl;
+};
 
 // ************************************************************************
 
 int main () {
+    menu();
     Jugador jugador;
 
-    crear_jugador();
+    crear_jugador(jugador);
 
     cout << "Datos: " << endl;
     cout << "Alias: " << jugador.alias << endl;
