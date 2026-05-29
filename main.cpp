@@ -30,7 +30,7 @@ Jugador jugadores[MAX_JUGADORES];
 
 Jugador crear_jugador(Jugador &j){
     system("clear");
-    cin.ignore();
+    //cin.ignore();
 
     cout << "Ingrese su alias: ";
     getline(cin, j.alias); 
@@ -46,6 +46,7 @@ Jugador crear_jugador(Jugador &j){
       
     cout << "Fecha de nacimiento:" << endl << " Día >>";
     cin >> j.fecha_nacimiento.dia; 
+    cin.ignore();
     system("clear");
 
     cout << "Fecha de nacimiento:" << endl << " Mes >>";
@@ -53,7 +54,8 @@ Jugador crear_jugador(Jugador &j){
     system("clear");
     
     cout << "Fecha de nacimiento:" << endl << " Año >>";
-    cin >> j.fecha_nacimiento.anio; 
+    cin >> j.fecha_nacimiento.anio;
+    cin.ignore();
     system("clear");
     return j;
 }
@@ -82,7 +84,7 @@ int main () {
     cout << "Alias: " << jugador.alias << endl;
     cout << "Nombre: " << jugador.nombre << endl;
     cout << "Apellido: " << jugador.apellido << endl;
-    cout << "Fecha: " << jugador.fecha_nacimiento.dia << " de " << jugador.fecha_nacimiento.mes << " del año " << jugador.fecha_nacimiento.anio << endl;
+    cout << "Fecha: " << jugador.fecha_nacimiento.dia << " del mes " << jugador.fecha_nacimiento.mes << " del año " << jugador.fecha_nacimiento.anio << endl;
 
     return 0;
 }
