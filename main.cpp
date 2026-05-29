@@ -17,14 +17,9 @@ struct Jugador{
     string apellido;
     Fecha fecha_nacimiento;
     bool estado;
-};    
+};
 
 Jugador jugadores[MAX_JUGADORES];
-
-
-// ****************************************************
-
-Juego Simon;
 
 // ****************** Prototipos de Funciones y Procedimientos ************
 
