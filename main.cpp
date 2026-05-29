@@ -29,6 +29,24 @@ struct Juego {
 
 // ****************** Prototipos de Funciones y Procedimientos ************
 
+Jugador crear_jugador();
+void menu();
+void imprimirJugador();
+
+
+// ************************************************************************
+
+int main () {
+    menu();
+    Jugador jugador;
+    crear_jugador();
+    imprimirJugador(jugador); 
+  
+    return 0;
+}
+
+
+//CREAR JUGADOR
 Jugador crear_jugador(){
     Jugador j;
     system("clear");
@@ -64,7 +82,7 @@ Jugador crear_jugador(){
 
 };
 
-//MENU
+//MENÚ
 void menu() {
     cout << "Bienvenidos al Juego SIMON." << endl;
     cout << "Ingrese una de las siguientes opciones: " << endl;
@@ -73,8 +91,9 @@ void menu() {
     cout << "   3. Informes" << endl;
     cout << "   4. Salir" << endl;
     cout << ">> ";
-}
-// IMPRIMIR JUGADOR
+};
+
+// IMPRIMIR DATOS DE UN JUGADOR
 void imprimirJugador(Jugador j) {
   
     cout << "Alias: " << j.alias << endl;
@@ -84,16 +103,3 @@ void imprimirJugador(Jugador j) {
     cout << "Mes:" << j.fecha_nacimiento.mes << endl;
     cout << "Año:" << j.fecha_nacimiento.anio << endl;
 };
-
-// ************************************************************************
-
-int main () {
-    menu();
-    Jugador jugador;
-    crear_jugador();
-    imprimirJugador(jugador); 
-  
-    return 0;
-}
-
-
