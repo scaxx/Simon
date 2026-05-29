@@ -83,7 +83,7 @@ void imprimirJugador(Jugador j) {
     cout << "Apellido: " << j.apellido << endl;
     cout << "Fecha de nacimiento: " << endl << "Día" << j.fecha_nacimiento.dia << endl;
     cout << "Mes:" << j.fecha_nacimiento.mes << endl;
-    cout << "Año:" << j.fecha_nacimiento.mes << endl;
+    cout << "Año:" << j.fecha_nacimiento.anio << endl;
 };
 
 // ************************************************************************
