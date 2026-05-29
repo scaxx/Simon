@@ -1,11 +1,26 @@
 #include <iostream> 
+#include <unistd.h>
+#define MAX_JUGADORES 10
 using namespace std;
+
 
 /* JUEGO SIMÓN */
 
 // ****************** Estructuras *********************
+struct Fecha{
+    int dia;
+    string mes;
+    int año;
+};
+struct Jugador{
+    string alias;
+    string nombre;
+    string apellido;
+    struct Fecha;
+    bool estado;
+};    
 
-
+Jugador jugadores[MAX_JUGADORES];
 
 
 // ****************************************************
