@@ -31,17 +31,40 @@ struct Juego {
 
 Jugador crear_jugador();
 void menu();
-void imprimirJugador();
-bool fecha_valida();
-
+void imprimirJugador(Jugador j);
+bool fecha_valida(Fecha f);
+void agregar_jugador(Juego &juego_actual);
 
 // ************************************************************************
 
 int main () {
-    menu();
-    Jugador jugador;
-    crear_jugador();
-    imprimirJugador(); 
+    // 1. Creamos la estructura general del juego (que adentro ya tiene el arreglo y el contador)
+    Juego miJuego; 
+    // 2. Mostramos el menú inicial
+    int opcion = 0;
+    while (opcion != 4) {
+        menu(); // Imprime las opciones (1. Gestionar, 2. Jugar, etc.)
+        cin >> opcion;
+        cin.ignore(); // Limpiamos el buffer para que los getline de abajo no se salten
+
+        switch (opcion) {
+            case 1:
+                // Si digita 1, entra a pedir los datos y guardarlos
+                agregar_jugador(miJuego); 
+                break;
+            
+            case 4:
+                cout << "\n¡Gracias por jugar al SIMON! Saliendo del programa..." << endl;
+                break;
+                
+            default:
+                cout << "\n[ERROR] Opcion invalida. Intente con un numero del 1 al 4." << endl;
+                cout << "Presione Enter para continuar...";
+                cin.get();
+                system("clear");
+                break;
+        }
+    }
   
     return 0;
 }
@@ -70,17 +93,28 @@ Jugador crear_jugador(){
     cin.ignore();
     system("clear");
 
-    cout << "Fecha de nacimiento:" << endl << " Mes >>";
-    getline (cin, j.fecha_nacimiento.mes); 
-    system("clear");
-    
-    cout << "Fecha de nacimiento:" << endl << " Año >>";
-    cin >> j.fecha_nacimiento.anio;
-    cin.ignore();
-    system("clear");
+    do {
+        cout << "Fecha de nacimiento:" << endl << " Dia >> ";
+        cin >> j.fecha_nacimiento.dia; 
+        cin.ignore();
+
+        cout << " Mes (numero del 01 al 12) >> ";
+        getline(cin, j.fecha_nacimiento.mes); 
+        
+        cout << " Anio (Mayor o igual a 2000) >> ";
+        cin >> j.fecha_nacimiento.anio;
+        cin.ignore();
+        system("clear");
+
+        // AQUÍ ES DONDE SE CONECTAN: Le pasamos la fecha cargada a tu bool
+        if (!fecha_valida(j.fecha_nacimiento)) {
+            cout << "[ERROR] Fecha invalida o anio menor a 2000. Intente de nuevo.\n" << endl;
+        }
+
+    } while (!fecha_valida(j.fecha_nacimiento)); // Se repite si tu bool da false
+
     j.estado = true;
     return j;
-
 };
 
 //MENÚ
@@ -95,8 +129,7 @@ void menu() {
 };
 
 // IMPRIMIR DATOS DE UN JUGADOR
-void imprimirJugador() {
-    Jugador j;
+void imprimirJugador(Jugador j) {
     cout << "Alias: " << j.alias << endl;
     cout << "Nombre: " <<j.nombre << endl;
     cout << "Apellido: " << j.apellido << endl;
@@ -104,9 +137,8 @@ void imprimirJugador() {
     cout << "Mes:" << j.fecha_nacimiento.mes << endl;
     cout << "Año:" << j.fecha_nacimiento.anio << endl;
 };
-
-bool fecha_valida() {
-    Fecha f;
+//COMPRUEBA SI LA FECHA INGRESADA ES VÁLIDA
+bool fecha_valida(Fecha f) {
     // 1. Validar el año (mayor o igual a 2000)
     if (f.anio < 2000) {
         return false; 
@@ -118,7 +150,7 @@ bool fecha_valida() {
     }
 
     // 3. Determinar el límite de días según el mes escrito por el usuario
-    int max_dias;
+    int max_dias=0;
 // No tuvimos en cuenta el año bisciesto ¡¡te queremos Nico!!
     if (f.mes == "2" || f.mes == "02") {
             max_dias = 28;
@@ -133,7 +165,8 @@ bool fecha_valida() {
     }
     //Si se ingresa algo diferente de los números esperados. 
     else {
-        cout << "Por favor, ingrese un mes válido." << endl;
+        cout << "[ERROR] El mes ingresado no existe." << endl;
+        return false;
     }
    
     //Si el día ingresado supera el máximo. 
@@ -142,4 +175,21 @@ bool fecha_valida() {
     }
 
     return true; // Si pasó todos los filtros, la fecha es válida
+}
+
+// NUEVA FUNCIÓN: Guarda el jugador en el arreglo
+void agregar_jugador(Juego &juego_actual) {
+    if (juego_actual.cantJugadores < MAX_JUGADORES) {
+        
+        // Guarda el jugador creado en la posición libre actual
+        juego_actual.jugadores[juego_actual.cantJugadores] = crear_jugador();
+        
+        cout << "\n--- JUGADOR REGISTRADO CON EXITO ---" << endl;
+        // Imprime el jugador que acabamos de guardar
+        imprimirJugador(juego_actual.jugadores[juego_actual.cantJugadores]);
+        
+        juego_actual.cantJugadores++; // Sumamos 1 al contador
+    } else {
+        cout << "[ERROR] Maximo de jugadores alcanzado." << endl;
+    }
 }
