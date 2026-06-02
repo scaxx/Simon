@@ -17,6 +17,7 @@ struct Jugador{
     string apellido;
     Fecha fecha_nacimiento;
     bool estado;
+    int puntaje_maximo;
 };    
 struct Juego {
     Jugador jugadores[MAX_JUGADORES];
@@ -58,7 +59,7 @@ int main () {
                 break;
                 
             default:
-                cout << "\n[ERROR] Opcion invalida. Intente con un numero del 1 al 4." << endl;
+                cout << "\n[ERROR] Opcion invalida. Intente con un número del 1 al 4." << endl;
                 cout << "Presione Enter para continuar...";
                 cin.get();
                 system("clear");
@@ -92,6 +93,9 @@ Jugador crear_jugador(){
     cin >> j.fecha_nacimiento.dia; 
     cin.ignore();
     system("clear");
+
+    //Inicializamos el puntaje en 0 para cada jugador recientemente creado
+    j.puntaje_maximo = 0;
 
     do {
         cout << "Fecha de nacimiento:" << endl << " Dia >> ";
