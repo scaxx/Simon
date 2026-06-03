@@ -58,11 +58,11 @@ Jugador crear_jugador();
 void menu();
 void imprimirJugador(Jugador j);
 bool fecha_valida(Fecha f);
-void agregar_jugador(Juego &juego_actual);
-bool sonNumeros(string);
+void agregar_jugador(Juego &juego_actual); //Agregar jugador no debería hacerse cuando creamos el jugador? Lo agregamos al arreglo y vamos editando el puntaje a medida que juega
+/*bool sonNumeros(string);
 int convertirOpcion(string);
 void esperar();
-int leerEntrada();
+int leerEntrada();*/
 
 
 // ************************************************************************
