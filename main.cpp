@@ -98,12 +98,6 @@ Jugador crear_jugador(){
     cout << "Ingresa tu apellido: ";
     getline (cin, j.apellido);
     system("clear");
-    
-    //Si lo dejamos acá se pide que ingrese el día dos veces (dentro y fuera del bucle)
-    /*cout << "Fecha de nacimiento:" << endl << " Día >>";
-    cin >> j.fecha_nacimiento.dia; 
-    cin.ignore();
-    system("clear");*/
 
     //Inicializamos el puntaje en 0 para cada jugador recientemente creado
     j.puntaje_maximo = 0;
@@ -121,12 +115,12 @@ Jugador crear_jugador(){
         cin.ignore();
         system("clear");
 
-        // AQUÍ ES DONDE SE CONECTAN: Le pasamos la fecha cargada a tu bool
+        // AQUÍ ES DONDE SE CONECTAN: Le pasamos la fecha cargada al bool
         if (!fecha_valida(j.fecha_nacimiento)) {
             cout << "¡ERROR! Fecha de nacimiento inválida. Intenta de nuevo." << endl;
         }
 
-    } while (!fecha_valida(j.fecha_nacimiento)); // Se repite si tu bool da false
+    } while (!fecha_valida(j.fecha_nacimiento)); // Se repite si el bool da false
 
     j.estado = true;
     return j;
