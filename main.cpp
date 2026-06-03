@@ -246,7 +246,8 @@ void agregar_jugador(Juego &juego_actual) {
 }
     // toma un string de entrada que representa la opción elegida 
 // chequea que sea válida y devuelve el número correspondiente, o -1 si no es correcto
-int convertirOpcion(string s) {
+
+/*int convertirOpcion(string s) {
     if (!sonNumeros(s))
         return -1;
     int opcion = stoi(s);
@@ -273,4 +274,4 @@ int leerEntrada() {
     string s;
     getline(cin, s);
     return convertirOpcion(s);
-}
+}*/
