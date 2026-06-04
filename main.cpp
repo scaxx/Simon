@@ -46,16 +46,17 @@ struct Partida {
 
 struct Juego {
     Jugador jugadores[MAX_JUGADORES];
-    int cantJugadores = 0;
+    int cantJugadores;
 
     Partida partidas[MAX_PARTIDAS];
-    int cantPartidas = 0;
+    int cantPartidas;
 };
 
 // ****************** Prototipos de Funciones y Procedimientos ************
 
-//Menú principal
-void menu(); //Procedimiento que despliega el menú principal
+//Menú principal e iniciar juego
+void desplegarMenuPrincipal();
+void menuPrincipal(); //Procedimiento que despliega el menú principal
 
 // Creación de Jugador
 
@@ -95,13 +96,14 @@ int main () {
     // 1. Creamos la estructura general del juego (que adentro ya tiene el arreglo y el contador)
     Juego miJuego; 
 
+    
     // 2. Inicializamos la variable opcion
     int opcion;
 
     // 3. Mostramos el menú y manejamos las decisiones del usuario
     do {
 
-        menu(); //Muestra las opciones en la consola
+        menuPrincipal(); //Muestra las opciones en la consola
 
         opcion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción en un número - no hay errores en el buffer
 
@@ -226,8 +228,8 @@ Jugador crear_jugador(Juego &juego_actual){
     return j;
 };
 
-//MENÚ
-void menu() {
+//MENÚ PRINCIPAL
+void menuPrincipal() {
     cout << "Bienvenidos al Juego SIMON." << endl;
     cout << "Ingrese una de las siguientes opciones: " << endl;
     cout << "   1. Gestionar jugadores" << endl;
