@@ -58,6 +58,7 @@ Jugador crear_jugador();
 void menu();
 void imprimirJugador(Jugador j);
 bool fecha_valida(Fecha f);
+void gestion(Juego &juego_actual);
 void opcionesInformes(Juego &juego_actual);
 void mostrarTodosLosJugadores(Juego &juego_actual);
 void agregar_jugador(Juego &juego_actual);
@@ -65,6 +66,7 @@ bool sonNumeros(string);
 int convertirOpcion(string);
 void esperar();
 int leerEntrada();
+void menuGestionDeJugadores();
 
 
 // ************************************************************************
@@ -87,8 +89,7 @@ int main () {
 
         switch (opcion) {
             case 1:// Si digita 1, entra al menú para gestionar jugadores
-            // Por ahora sólo tenemos la opción de agregar jugador
-                agregar_jugador(miJuego); 
+                gestion(miJuego);
                 break;
 
             case 2://Si digita 2, se debería inicializar el juego. Por el momento se despliega un mensaje.
@@ -105,7 +106,6 @@ int main () {
                     
             default: //Sólo si opción < 1 u opción > 4
                 cout << "¡ERROR! Opción inválida. Vuelve a intentar con un número del 1 al 4." << endl;
-                cout << "Presione Enter para continuar...";
                 esperar();
                 break;
         }
@@ -190,6 +190,59 @@ void menu() {
     cout << ">> ";
 };
 
+//MENU PARA GESTIÓN DE JUGADORES
+void menuGestionDeJugadores() {
+    cout << "MENÚ DE GESTIÓN" << endl;
+    cout << "   1. Nuevo jugador" << endl;
+    cout << "   2. Eliminar jugador" << endl;
+    cout << "   3. Modificar jugador" << endl;
+    cout << "   4. Consultar jugador" << endl;
+    cout << "   5. Lista de jugadores" << endl;
+    cout << "   6. Salir" << endl;
+    cout << ">> ";
+}
+
+//DENTRO DEL MENÚ DE GESTIÓN
+void gestion(Juego &juego_actual) {
+    int opcionGestion; //Utilizamos int pero luego leemos la entrada con la función para realizar el cambio de type sin errores
+
+    do {
+
+        menuGestionDeJugadores(); //Mostramos el menú de gestión
+        opcionGestion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción a un número - no hay errores en el buffer
+        system("clear");
+
+        switch (opcionGestion) {
+        case 1:
+            crear_jugador();
+            break;
+        case 2:
+            cout << "Opción en desarrollo" << endl;
+            break;
+        case 3:
+            cout << "Opción en desarrollo" << endl;
+            break;
+        case 4:
+            cout << "Opción en desarrollo" << endl;
+            break;
+        case 5:
+            cout << "Opción en desarrollo" << endl;
+            break;
+        case 6:
+            cout << "Regresando al menú principal..." << endl;
+            break;
+        default:
+            cout << "¡ERROR! Opción inválida. Vuelve a intentar con un número del 1 al 6." << endl;
+            esperar();
+            break;
+        }
+
+        esperar();//Para visualizar correctamente los datos en caso de haber creado o editado un jugador
+
+    } while (opcionGestion != 6);
+
+}
+
 // IMPRIMIR DATOS DE UN JUGADOR
 void imprimirJugador(Jugador j) {
     cout << "Alias: " << j.alias << endl;
@@ -272,19 +325,21 @@ int convertirOpcion(string s) {
     if (!sonNumeros(s))
         return -1;
     int opcion = stoi(s);
-    if (opcion < 1 || opcion > 4)
+    /*if (opcion < 1 || opcion > 4)
         return -1;
-    else 
-        return opcion;
+    else */ //Este bloque verifica que el valor esté dentro de determinado rango, para la fecha no nos sirve porque quedarían números fuera
+    return opcion;
 }
 
+//Usamos la función para verificar que el texto está compuesto únicamente por números
 bool sonNumeros(string s) {
     for (int i = 0; i < s.length(); i++)
-        if (s[i] < '1' || s[i] > '4')
-            return false;
+        if (s[i] < '0' || s[i] > '9') //Convertimos la función en general para que podamos usarla en todos los casos
+            return false;             //Verificamos qué números necesitamos dentro de cada función
     return true;
 }
 
+//Procedimiento general que utilizamos en casos de error
 void esperar() {
     string continuar;
     cout << endl << "Presiona Enter para continuar...";
