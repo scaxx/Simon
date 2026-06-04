@@ -2,6 +2,7 @@
 #include <unistd.h>
 
 // --- CONSTANTES DEL SISTEMA ---
+
 // Valores fijos que definen los límites del programa.
 #define MAX_JUGADORES 10 // Capacidad máxima del vector de jugadores
 #define MAX_PARTIDAS 50  // Capacidad máxima del historial de partidas
@@ -19,8 +20,8 @@
 
 using namespace std;
 
-
 /* JUEGO SIMÓN */
+
 // ****************** Estructuras *********************
 struct Fecha{
     int dia;
@@ -48,25 +49,31 @@ struct Partida {
 };
 
 
-
-// ****************************************************
-
-
 // ****************** Prototipos de Funciones y Procedimientos ************
 
-Jugador crear_jugador();
-void menu();
-void imprimirJugador(Jugador j);
-bool fecha_valida(Fecha f);
-void gestion(Juego &juego_actual);
-void opcionesInformes(Juego &juego_actual);
-void mostrarTodosLosJugadores(Juego &juego_actual);
-void agregar_jugador(Juego &juego_actual);
-bool sonNumeros(string);
-int convertirOpcion(string);
-void esperar();
-int leerEntrada();
-void menuGestionDeJugadores();
+//Menú principal
+void menu(); //Procedimiento que despliega el menú principal
+
+// Creación de Jugador
+
+Jugador crear_jugador(Juego &juego_actual);
+void agregar_jugador(Juego &juego_actual); //Procedimiento que agrega un jugador creado recientemente a un arreglo de jugadores
+bool fecha_valida(Fecha f); //Procedimiento para validar la fecha introducida por el jugador (Crear Jugador)
+
+// Gestión de Jugadores
+
+void menuGestionDeJugadores(); //Procedimiento que habilita el menú de Gestión de Jugadores
+void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección de Gestión de Jugadores
+void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema
+void buscarJugador(string alias); //Procedimiento para buscar a un jugador en específico mediante el alias
+void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
+
+// Funciones y procedimientos generales
+
+bool sonNumeros(string); //Función para verificar que los datos ingresados son números
+int convertirOpcion(string); //Función para leer un string y devolver un int
+void esperar(); //Procedimiento para casos de error
+int leerEntrada(); //Función que lee la entrada del usuario y utliza la función convertirOpcion para devolver un número
 
 
 // ************************************************************************
@@ -97,7 +104,7 @@ int main () {
                 break;
 
             case 3://Si digital 3, se despliegan los informes de los jugadores. Por el momento se despliega un mensaje.
-                opcionesInformes(miJuego);
+                cout << "Informes momentáneamente fuera de servicio :(" << endl;
                 break;
                 
             case 4: //Sale del juego
@@ -111,7 +118,9 @@ int main () {
         }
 
         if (opcion != 4) {
-            esperar();
+            //esperar(); Para visualizar correctamente la opción seleccionada
+            // Por el momento lo comentamos para recordar que tenemos que realizar una función que espere un tiempo determinado antes de borrar pantalla
+            // Para que el usuario pueda visualizar los datos con éxito
         }
 
     } while (opcion != 4);    
@@ -121,12 +130,35 @@ int main () {
 
 
 //CREAR JUGADOR
-Jugador crear_jugador(){
+Jugador crear_jugador(Juego &juego_actual){
     Jugador j;
-    system("clear");
+    bool aliasDisponible = false; //Definimos una variable para verificar que el alias esté disponible, asumimos que es false
 
-    cout << "Ingresa tu alias: ";
-    getline(cin, j.alias); 
+    do {
+
+        system("clear");
+        cout << "Ingresa tu alias: ";
+        getline(cin, j.alias);
+
+        aliasDisponible = true; //Seteamos a true porque es más fácil verificar una contradicción que muchos casos en los que se cumple (en caso de que no esté utilizado)
+
+        //Revisamos en el arreglo de jugadores, verificamos que no se repita el alias
+        for (int i = 0; i < juego_actual.cantJugadores; i++) {
+            if (juego_actual.jugadores[i].alias == j.alias) {
+                aliasDisponible = false;
+            }
+        }
+
+        if (aliasDisponible == false) {
+            cout << "¡ERROR! El alias " << j.alias << " ya está en uso." << endl;
+            cout << "Por favor, intenta con otro alias..." << endl;
+            //Provisorio hasta agregar un procedimiento que genere la pausa
+            string pausa;
+            getline(cin, pausa);
+        }
+
+    } while (aliasDisponible == false);
+
     system("clear");
 
     cout << "Ingresa tu nombre: ";
@@ -136,7 +168,6 @@ Jugador crear_jugador(){
     cout << "Ingresa tu apellido: ";
     getline (cin, j.apellido);
     system("clear");
-
 
     //Inicializamos el puntaje máximo en 0 para cada jugador creado
     j.puntaje_maximo = 0;
@@ -214,7 +245,7 @@ void gestion(Juego &juego_actual) {
 
         switch (opcionGestion) {
         case 1:
-            crear_jugador();
+            agregar_jugador(juego_actual);
             break;
         case 2:
             cout << "Opción en desarrollo" << endl;
@@ -223,7 +254,7 @@ void gestion(Juego &juego_actual) {
             cout << "Opción en desarrollo" << endl;
             break;
         case 4:
-            cout << "Opción en desarrollo" << endl;
+            //buscarJugador(string alias);
             break;
         case 5:
             cout << "Opción en desarrollo" << endl;
@@ -237,7 +268,9 @@ void gestion(Juego &juego_actual) {
             break;
         }
 
-        esperar();//Para visualizar correctamente los datos en caso de haber creado o editado un jugador
+        //esperar(); Para visualizar correctamente los datos en caso de haber creado o editado un jugador
+        // Por el momento lo comentamos para recordar que tenemos que realizar una función que espere un tiempo determinado antes de borrar pantalla
+        // Para que el usuario pueda visualizar los datos con éxito
 
     } while (opcionGestion != 6);
 
@@ -307,7 +340,7 @@ void agregar_jugador(Juego &juego_actual) {
     if (juego_actual.cantJugadores < MAX_JUGADORES) {
         
         // Guarda el jugador creado en la posición libre actual
-        juego_actual.jugadores[juego_actual.cantJugadores] = crear_jugador();
+        juego_actual.jugadores[juego_actual.cantJugadores] = crear_jugador(juego_actual);
         
         cout << "--- JUGADOR REGISTRADO CON ÉXITO ---" << endl;
         // Imprime el jugador que acabamos de guardar
@@ -325,9 +358,9 @@ int convertirOpcion(string s) {
     if (!sonNumeros(s))
         return -1;
     int opcion = stoi(s);
-    /*if (opcion < 1 || opcion > 4)
-        return -1;
-    else */ //Este bloque verifica que el valor esté dentro de determinado rango, para la fecha no nos sirve porque quedarían números fuera
+    /*if (opcion < 1 || opcion > 4) // Este bloque verifica que el valor esté dentro de determinado rango
+        return -1;                  // Para fecha y menú de gestión no sirve porque nos quedarían funcionalidades fuera
+    else */                         // Se verifica sólo con los case en cada switch
     return opcion;
 }
 
