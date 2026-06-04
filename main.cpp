@@ -58,11 +58,11 @@ Jugador crear_jugador();
 void menu();
 void imprimirJugador(Jugador j);
 bool fecha_valida(Fecha f);
-void agregar_jugador(Juego &juego_actual);
-bool sonNumeros(string);
+void agregar_jugador(Juego &juego_actual); //Agregar jugador no debería hacerse cuando creamos el jugador? Lo agregamos al arreglo y vamos editando el puntaje a medida que juega
+/*bool sonNumeros(string);
 int convertirOpcion(string);
 void esperar();
-int leerEntrada();
+int leerEntrada();*/
 
 
 // ************************************************************************
@@ -125,8 +125,15 @@ Jugador crear_jugador(){
     cout << "Ingresa tu apellido: ";
     getline (cin, j.apellido);
     system("clear");
-       
-    j.puntaje_maximo = 0;//Inicializamos el puntaje en 0 para cada jugador recientemente creado
+    
+    //Si lo dejamos acá se pide que ingrese el día dos veces (dentro y fuera del bucle)
+    /*cout << "Fecha de nacimiento:" << endl << " Día >>";
+    cin >> j.fecha_nacimiento.dia; 
+    cin.ignore();
+    system("clear");*/
+
+    //Inicializamos el puntaje en 0 para cada jugador recientemente creado
+    j.puntaje_maximo = 0;
 
     do {
         cout << "Fecha de nacimiento:" << endl << " Día >> ";
@@ -146,7 +153,7 @@ Jugador crear_jugador(){
             cout << "¡ERROR! Fecha de nacimiento inválida. Intenta de nuevo." << endl;
         }
 
-    } while (!fecha_valida(j.fecha_nacimiento)); // Se repite si da false
+    } while (!fecha_valida(j.fecha_nacimiento)); // Se repite si tu bool da false
 
     j.estado = true;
     return j;
@@ -239,7 +246,8 @@ void agregar_jugador(Juego &juego_actual) {
 }
     // toma un string de entrada que representa la opción elegida 
 // chequea que sea válida y devuelve el número correspondiente, o -1 si no es correcto
-int convertirOpcion(string s) {
+
+/*int convertirOpcion(string s) {
     if (!sonNumeros(s))
         return -1;
     int opcion = stoi(s);
@@ -266,4 +274,4 @@ int leerEntrada() {
     string s;
     getline(cin, s);
     return convertirOpcion(s);
-}
+}*/
