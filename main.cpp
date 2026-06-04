@@ -272,7 +272,7 @@ int convertirOpcion(string s) {
     if (!sonNumeros(s))
         return -1;
     int opcion = stoi(s);
-    if (opcion < 0 || opcion > 4)
+    if (opcion < 1 || opcion > 4)
         return -1;
     else 
         return opcion;
@@ -280,7 +280,7 @@ int convertirOpcion(string s) {
 
 bool sonNumeros(string s) {
     for (int i = 0; i < s.length(); i++)
-        if (s[i] < '0' || s[i] > '9')
+        if (s[i] < '1' || s[i] > '4')
             return false;
     return true;
 }
