@@ -4,9 +4,9 @@
 // --- CONSTANTES DEL SISTEMA ---
 
 // Valores fijos que definen los límites del programa.
-#define MAX_JUGADORES 10 // Capacidad máxima del vector de jugadores
+#define MAX_JUGADORES 10 // Capacidad máxima del arreglo de jugadores
 #define MAX_PARTIDAS 50  // Capacidad máxima del historial de partidas
-#define MAX_SECUENCIA 10  // Largo máximo absoluto de colores en el juego
+#define MAX_SECUENCIA 10  // Largo máximo de colores en el juego
 
 // Configuración de longitud de la secuencia de colores según la dificultad elegida
 #define LARGO_PRINCIPIANTE 6
