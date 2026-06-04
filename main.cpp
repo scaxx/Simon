@@ -88,10 +88,9 @@ void estadisticasGenerales(Juego juego_actual); //Procedimiento que despliega la
 // Sección de gestión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
-void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugadorión de Jugadores
+void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugador
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
-void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugador
 void eliminarJugador(Juego &juego_actual, Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
 
 void eliminarJugador(Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
