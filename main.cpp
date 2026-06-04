@@ -70,39 +70,48 @@ int leerEntrada();*/
 int main () {
     // 1. Creamos la estructura general del juego (que adentro ya tiene el arreglo y el contador)
     Juego miJuego; 
-    // 2. Mostramos el menú inicial
-    int opcion = leerEntrada();
-    system("clear");
-    if (opcion == -1) {
-            cout << "<< OPCIÓN INCORRECTA. VUELVA A INTENTAR >>" << endl;
-            esperar();
-          
-   
-    switch (opcion) {
-        case 1:// Si digita 1, entra a pedir los datos y guardarlos
-            agregar_jugador(miJuego); 
-            break;
 
-        case 2://Si digita 2, se debería inicializar el juego. Por el momento se despliega un mensaje.
-            cout << "Juego momentáneamente fuera de servicio :(" << endl;
-            break;
+    // 2. Inicializamos la variable opcion
+    int opcion;
 
-        case 3://Si digital 3, se despliegan los informes de los jugadores. Por el momento se despliega un mensaje.
-            cout << "Funcionalidad momentáneamente fuera de servicio :(" << endl;
+    // 3. Mostramos el menú y manejamos las decisiones del usuario
+    do {
+
+        menu();
+        cin >> opcion;
+        cin.ignore();
+        system("clear");
+
+        if (opcion < 1 || opcion > 4) {
+            cout << "<< Opción incorrecta. Selecciona un número entre 1 y 4 para continuar. >>" << endl;
             break;
-            
-        case 4: //Sale del juego
-            cout << "¡Gracias por jugar a SIMON! Saliendo del programa..." << endl;
-            break;
+        }          
+    
+        switch (opcion) {
+            case 1:// Si digita 1, entra a pedir los datos y guardarlos
+                agregar_jugador(miJuego); 
+                break;
+
+            case 2://Si digita 2, se debería inicializar el juego. Por el momento se despliega un mensaje.
+                cout << "Juego momentáneamente fuera de servicio :(" << endl;
+                break;
+
+            case 3://Si digital 3, se despliegan los informes de los jugadores. Por el momento se despliega un mensaje.
+                cout << "Funcionalidad momentáneamente fuera de servicio :(" << endl;
+                break;
                 
-        default:
-            cout << "¡ERROR! Opción inválida. Intente con un número del 1 al 4." << endl;
-            cout << "Presione Enter para continuar...";
-            cin.get();
-            system("clear");
-            break;
+            case 4: //Sale del juego
+                cout << "¡Gracias por jugar a SIMON! Saliendo del programa..." << endl;
+                break;
+                    
+            default:
+                cout << "¡ERROR! Opción inválida. Intente con un número del 1 al 4." << endl;
+                cout << "Presione Enter para continuar...";
+                cin.get();
+                system("clear");
+                break;
         }
-    }
+    } while (opcion != 4);    
   
     return 0;
 }
@@ -125,12 +134,6 @@ Jugador crear_jugador(){
     cout << "Ingresa tu apellido: ";
     getline (cin, j.apellido);
     system("clear");
-    
-    //Si lo dejamos acá se pide que ingrese el día dos veces (dentro y fuera del bucle)
-    /*cout << "Fecha de nacimiento:" << endl << " Día >>";
-    cin >> j.fecha_nacimiento.dia; 
-    cin.ignore();
-    system("clear");*/
 
     //Inicializamos el puntaje en 0 para cada jugador recientemente creado
     j.puntaje_maximo = 0;
@@ -153,7 +156,7 @@ Jugador crear_jugador(){
             cout << "¡ERROR! Fecha de nacimiento inválida. Intenta de nuevo." << endl;
         }
 
-    } while (!fecha_valida(j.fecha_nacimiento)); // Se repite si tu bool da false
+    } while (!fecha_valida(j.fecha_nacimiento)); // Se repite si bool da false
 
     j.estado = true;
     return j;
@@ -179,9 +182,10 @@ void imprimirJugador(Jugador j) {
     cout << "Mes: " << j.fecha_nacimiento.mes << endl;
     cout << "Año: " << j.fecha_nacimiento.anio << endl;
 };
+
 //COMPRUEBA SI LA FECHA INGRESADA ES VÁLIDA
 bool fecha_valida(Fecha f) {
-    // 1. Validar el año (mayor o igual a 2000)
+    // 1. Validar el año (debe ser mayor o igual a 2000)
     if (f.anio < 2000) {
         cout << "¡ERROR! El año ingresado debe ser mayor o igual a 2000." << endl;
         return false; 
@@ -194,7 +198,7 @@ bool fecha_valida(Fecha f) {
     }
 
     // 2. Validar que el día no sea negativo o cero
-    if (f.dia < 1) {
+    if (f.dia < 1 || f.dia > 31) {
         cout << "¡ERROR! El día ingresado no es válido." << endl;
         return false;
     }
@@ -228,7 +232,7 @@ bool fecha_valida(Fecha f) {
     return true; // Si pasó todos los filtros, la fecha es válida
 }
 
-// NUEVA FUNCIÓN: Guarda el jugador en el arreglo
+// Guarda el jugador en el arreglo
 void agregar_jugador(Juego &juego_actual) {
     if (juego_actual.cantJugadores < MAX_JUGADORES) {
         
