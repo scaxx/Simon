@@ -28,6 +28,7 @@ struct Fecha{
     string mes;
     int anio;
 };
+
 struct Jugador{
     string alias;
     string nombre;
@@ -37,11 +38,14 @@ struct Jugador{
     int puntaje_maximo;
 };    
 
+enum Resultado {COMPLETADO, PERDIDO, ABANDONADO};
+
 struct Partida {
     string aliasJugador;    // Quién jugó la partida
     string nivel;           // En qué dificultad (Principiante, Intermedio, Avanzado)
     int puntajeObtenido;    // Cuántos puntos hizo
     string resultado;       // El estado final ("Completado", "Perdido" o "Abandonado")
+    Resultado res;
 };
 
 struct Juego {
@@ -408,7 +412,7 @@ void imprimirJugador(Jugador j) {
 void editarJugador(Juego juego_actual) {
     string aliasBuscado;
     system("clear");
-    
+
     //Pedimos el alias para buscar el jugador que se quiere editar
     cout << "Ingresa el alias del jugador que quieres editar" << endl;
     getline(cin, aliasBuscado);
