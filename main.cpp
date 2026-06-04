@@ -65,7 +65,7 @@ bool fecha_valida(Fecha f); //Procedimiento para validar la fecha introducida po
 void menuGestionDeJugadores(); //Procedimiento que habilita el menú de Gestión de Jugadores
 void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección de Gestión de Jugadores
 void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema
-void buscarJugador(string alias); //Procedimiento para buscar a un jugador en específico mediante el alias
+int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
 
 // Funciones y procedimientos generales
@@ -140,21 +140,24 @@ Jugador crear_jugador(Juego &juego_actual){
         cout << "Ingresa tu alias: ";
         getline(cin, j.alias);
 
-        aliasDisponible = true; //Seteamos a true porque es más fácil verificar una contradicción que muchos casos en los que se cumple (en caso de que no esté utilizado)
+        int posicionAlias = buscarJugador(juego_actual, j.alias);
 
-        //Revisamos en el arreglo de jugadores, verificamos que no se repita el alias
-        for (int i = 0; i < juego_actual.cantJugadores; i++) {
-            if (juego_actual.jugadores[i].alias == j.alias) {
-                aliasDisponible = false;
+        //Verificamos que el alias está disponible
+        if (posicionAlias == -1) {
+            aliasDisponible = true;
+        } else {
+            //El alias ya existe pero está inactivo, así que devolvemos el jugador para que no pida nuevamente los datos
+            if (juego_actual.jugadores[posicionAlias].estado == false) {
+                juego_actual.jugadores[posicionAlias].estado = true; //Seteamos el estado a true = activo
+                cout << "¡Bienvenid@ devuelta" << juego_actual.jugadores[posicionAlias].alias << "!" << endl;
+
+                return juego_actual.jugadores[posicionAlias];
+            //El alias existe y está activo, devolvemos error y pedimos un alias nuevo
+            } else {
+                cout << "El alias " << juego_actual.jugadores[posicionAlias].alias << " se encuentra en uso por un jugador activo." << endl;
+                cout << "Por favor, ingresa un alias válido." << endl;
+                esperar();
             }
-        }
-
-        if (aliasDisponible == false) {
-            cout << "¡ERROR! El alias " << j.alias << " ya está en uso." << endl;
-            cout << "Por favor, intenta con otro alias..." << endl;
-            //Provisorio hasta agregar un procedimiento que genere la pausa
-            string pausa;
-            getline(cin, pausa);
         }
 
     } while (aliasDisponible == false);
@@ -253,9 +256,27 @@ void gestion(Juego &juego_actual) {
         case 3:
             cout << "Opción en desarrollo" << endl;
             break;
-        case 4:
-            //buscarJugador(string alias);
+        case 4: {
+            //Definimos la variable que vamos a necesitar para buscar el alias del usuario
+            string aliasBuscado;
+            cout << "Por favor, ingresa el alias que deseas buscar: " << endl;
+            getline(cin, aliasBuscado);
+
+            //Usamos la función que definimos para buscar usuarios mediante el alias
+            int posicion = buscarJugador(juego_actual, aliasBuscado);
+
+            //Verificamos los resultados que devuelve la función
+            if (posicion == -1) {
+                //Si posicion -1 el alias no existe, por tanto el jugador no existe
+                cout << "¡Lo sentimos! No se encontró ningún jugador con el alias " << aliasBuscado << "." << endl;
+            } else {
+                //Posición != -1 significa que el alias existe y se devuelve su posición correspondiente en el arreglo
+                cout << "JUGADOR " << aliasBuscado << " ENCONTRADO:" << endl;
+                //Usamos la función para imprimir y devolvemos todos los datos del jugador
+                imprimirJugador(juego_actual.jugadores[posicion]);
+            }
             break;
+        }
         case 5:
             cout << "Opción en desarrollo" << endl;
             break;
@@ -276,14 +297,36 @@ void gestion(Juego &juego_actual) {
 
 }
 
+//BUSCAR UN JUGADDOR - Devuelve la posición en el arreglo si lo encuentra, o -1 si no existe
+int buscarJugador(Juego juego_actual, string aliasBuscado) {
+    for (int i = 0; i < juego_actual.cantJugadores; i++) {
+
+        if (juego_actual.jugadores[i].alias == aliasBuscado) {
+            return i; //Encontramos el alias buscado y devolvemos la posición en la que se encuentra
+        }
+
+    }
+    return -1; //Si no encontramos el alias, termina el bucle for y devuelve -1
+}
+
 // IMPRIMIR DATOS DE UN JUGADOR
 void imprimirJugador(Jugador j) {
     cout << "Alias: " << j.alias << endl;
     cout << "Nombre: " <<j.nombre << endl;
     cout << "Apellido: " << j.apellido << endl;
-    cout << "Fecha de nacimiento: " << endl << "Día: " << j.fecha_nacimiento.dia << endl;
-    cout << "Mes: " << j.fecha_nacimiento.mes << endl;
-    cout << "Año: " << j.fecha_nacimiento.anio << endl;
+    cout << "Fecha de nacimiento: " << endl;
+    cout << "  Día: " << j.fecha_nacimiento.dia << endl;
+    cout << "  Mes: " << j.fecha_nacimiento.mes << endl;
+    cout << "  Año: " << j.fecha_nacimiento.anio << endl;
+    cout << "Puntaje Máximo: " << j.puntaje_maximo << endl;
+
+    //Verificamos el estado actual del jugador
+    if (j.estado) {
+        cout << "Estado: Activo" << endl;
+    } else {
+        cout << "Estado: Inactivo" << endl;
+    }
+    
 };
 
 //COMPRUEBA SI LA FECHA INGRESADA ES VÁLIDA
@@ -338,15 +381,27 @@ bool fecha_valida(Fecha f) {
 // Guarda el jugador en el arreglo
 void agregar_jugador(Juego &juego_actual) {
     if (juego_actual.cantJugadores < MAX_JUGADORES) {
-        
-        // Guarda el jugador creado en la posición libre actual
-        juego_actual.jugadores[juego_actual.cantJugadores] = crear_jugador(juego_actual);
-        
-        cout << "--- JUGADOR REGISTRADO CON ÉXITO ---" << endl;
-        // Imprime el jugador que acabamos de guardar
-        imprimirJugador(juego_actual.jugadores[juego_actual.cantJugadores]);
-        
-        juego_actual.cantJugadores++; // Sumamos 1 al contador
+
+        //Llamamos a la función para pedir datos y verificar si se reactiva un jugador o no
+        Jugador resultado = crear_jugador(juego_actual);
+
+        // Revisamos si el alias del resultado ya existe en nuestro arreglo antes de meterlo al final
+        int posicion = buscarJugador(juego_actual, resultado.alias);
+
+        // Si posicion es menor que cantJugadores, significa que el alias ya está en el arreglo
+        if (posicion >= 0 && posicion < juego_actual.cantJugadores) {
+            // Reactivamos el jugador
+            cout << "JUGADOR REACTIVADO" << endl;
+        } 
+        else {
+            // Si es un jugador nuevo lo guardamos en la posición libre actual y sumamos uno al contador
+            juego_actual.jugadores[juego_actual.cantJugadores] = resultado;
+            
+            cout << "JUGADOR REGISTRADO CON ÉXITO" << endl;
+            imprimirJugador(juego_actual.jugadores[juego_actual.cantJugadores]);
+            
+            juego_actual.cantJugadores++; // Sumamos 1 al contador de jugadores
+        }
     } else {
         cout << "¡ERROR! Máximo de jugadores alcanzado." << endl;
     }
