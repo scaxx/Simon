@@ -36,13 +36,6 @@ struct Jugador{
     bool estado;
     int puntaje_maximo;
 };    
-struct Juego {
-    Jugador jugadores[MAX_JUGADORES];
-    int cantJugadores = 0;
-
-    Partida partidas[MAX_PARTIDAS];
-    int cantPartidas = 0;
-};
 
 struct Partida {
     string aliasJugador;    // Quién jugó la partida
@@ -51,6 +44,13 @@ struct Partida {
     string resultado;       // El estado final ("Completado", "Perdido" o "Abandonado")
 };
 
+struct Juego {
+    Jugador jugadores[MAX_JUGADORES];
+    int cantJugadores = 0;
+
+    Partida partidas[MAX_PARTIDAS];
+    int cantPartidas = 0;
+};
 
 // ****************** Prototipos de Funciones y Procedimientos ************
 
@@ -395,6 +395,7 @@ void imprimirJugador(Jugador j) {
 };
 
 //COMPRUEBA SI LA FECHA INGRESADA ES VÁLIDA
+//Hay que arreglar para validar parte por parte la fecha y no todo junto
 bool fecha_valida(Fecha f) {
     // 1. Validar el año (debe ser mayor o igual a 2000)
     if (f.anio < 2000) {
