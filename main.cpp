@@ -85,6 +85,16 @@ void mejorJugadorPorNivel(Juego juego_actual); //Procedimiento que despliega una
 void estadisticasGenerales(Juego juego_actual); //Procedimiento que despliega las estadísticas generales
 
 //void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema - no sé si ponerlo jeee
+ión de Jugadores
+int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
+void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
+void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugadorión de Jugadores
+int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
+void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
+void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugador
+void eliminarJugador(Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
+
+void eliminarJugador(Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
 
 // Funciones y procedimientos generales
 bool sonNumeros(string); //Función para verificar que los datos ingresados son números
@@ -422,7 +432,12 @@ void editarJugador(Juego juego_actual) {
 
 //ELIMINAR JUGADOR
 void eliminarJugador(Jugador j, string aliasBuscado) {
-    
+    for(int i = 0; i < cantJugadores; i++){
+        for ( int j = i ; j< cantJugadores-1; j++){
+            jugadores[j] = jugadores [j + 1];
+        }
+    }
+    cantJugadores--; 
 }
 
 //COMPRUEBA SI LA FECHA INGRESADA ES VÁLIDA
