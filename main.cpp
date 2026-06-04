@@ -73,7 +73,7 @@ void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de 
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
 void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugador
-void eliminarJugador(Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
+void eliminarJugador(Juego &juego_actual); //Procedimiento para eliminar jugador
 
 // Sección de Informes
 void menuInformes(); //Procedimiento que despliega el menú de Informes
@@ -85,14 +85,14 @@ void mejorJugadorPorNivel(Juego juego_actual); //Procedimiento que despliega una
 void estadisticasGenerales(Juego juego_actual); //Procedimiento que despliega las estadísticas generales
 
 //void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema - no sé si ponerlo jeee
-ión de Jugadores
+// Sección de gestión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
 void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugadorión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
 void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugador
-void eliminarJugador(Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
+void eliminarJugador(Juego &juego_actual, Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
 
 void eliminarJugador(Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
 
@@ -340,7 +340,7 @@ void gestion(Juego &juego_actual) {
             agregar_jugador(juego_actual);
             break;
         case 2:
-            cout << "Opción en desarrollo" << endl;
+            eliminarJugador(juego_actual);
             break;
         case 3:
             cout << "Opción en desarrollo" << endl;
@@ -431,13 +431,37 @@ void editarJugador(Juego juego_actual) {
 }
 
 //ELIMINAR JUGADOR
-void eliminarJugador(Jugador j, string aliasBuscado) {
-    for(int i = 0; i < cantJugadores; i++){
-        for ( int j = i ; j< cantJugadores-1; j++){
-            jugadores[j] = jugadores [j + 1];
-        }
+void eliminarJugador(Juego &juego_actual) {
+    string aliasBuscado;
+    system("clear");
+    cout << "Ingresa el alias del jugador que deseas eliminar: " << endl;
+    getline(cin, aliasBuscado);
+
+    //Usamos la función para buscar el jugador mediante el alias
+    int posicion = buscarJugador(juego_actual, aliasBuscado);
+
+    //Si el alias no se encuentra en el arreglo jugadores
+    if (posicion == -1) {
+        cout << "No se encontró ningún jugador con el alias " << aliasBuscado << endl;
+        esperar();
+    } else { //Si el alias se encuentra en el arreglo jugadores
+        //Ingresamos al arreglo para empezar a comparar
+        for (int i = 0; i < juego_actual.cantJugadores; i++){
+            //Cuando encontramos el alias
+            if (juego_actual.jugadores[i].alias == aliasBuscado) {
+                //Empezamos la lógica para correr los elementos del arreglo (los jugadores) hacia la izquierda
+                for ( int j = i ; j < juego_actual.cantJugadores - 1; j++){
+                    juego_actual.jugadores[j] = juego_actual.jugadores[j + 1];
+                    
+                }
+                //Bajamos 1 en el tope del arreglo de jugadores
+                juego_actual.cantJugadores--;
+                cout << "¡Jugador eliminado con éxito!" << endl; //Avisamos al usuario que el jugador seleccionado ha sido eliminado
+                return; //Terminamos al función para que no siga buscando jugadores
+            }
+        }        
     }
-    cantJugadores--; 
+    
 }
 
 //COMPRUEBA SI LA FECHA INGRESADA ES VÁLIDA
