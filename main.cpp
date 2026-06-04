@@ -72,7 +72,7 @@ void menuGestionDeJugadores(); //Procedimiento que habilita el menú de Gestión
 void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección de Gestión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
-void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugador
+void editarJugador(Juego &juego_actual); //Procedimiento para editar jugador
 void eliminarJugador(Juego &juego_actual); //Procedimiento para eliminar jugador
 
 // Sección de Informes
@@ -85,15 +85,13 @@ void mejorJugadorPorNivel(Juego juego_actual); //Procedimiento que despliega una
 void estadisticasGenerales(Juego juego_actual); //Procedimiento que despliega las estadísticas generales
 
 //void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema - no sé si ponerlo jeee
+
 // Sección de gestión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
-void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugador
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
-void eliminarJugador(Juego &juego_actual, Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
-
-void eliminarJugador(Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
+void eliminarJugador(Juego &juego_actual); //Procedimiento para eliminar jugador
 
 // Funciones y procedimientos generales
 bool sonNumeros(string); //Función para verificar que los datos ingresados son números
