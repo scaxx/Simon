@@ -55,17 +55,15 @@ struct Juego {
 // ****************** Prototipos de Funciones y Procedimientos ************
 
 //Menú principal e iniciar juego
-void desplegarMenuPrincipal();
+void desplegarMenuPrincipal(Juego &juego_actual);
 void menuPrincipal(); //Procedimiento que despliega el menú principal
 
 // Creación de Jugador
-
-Jugador crear_jugador(Juego &juego_actual);
+Jugador crear_jugador(Juego &juego_actual); //Procedimiento para crear un jugador
 void agregar_jugador(Juego &juego_actual); //Procedimiento que agrega un jugador creado recientemente a un arreglo de jugadores
 bool fecha_valida(Fecha f); //Procedimiento para validar la fecha introducida por el jugador (Crear Jugador)
 
 // Gestión de Jugadores
-
 void menuGestionDeJugadores(); //Procedimiento que habilita el menú de Gestión de Jugadores
 void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección de Gestión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
@@ -83,7 +81,6 @@ void estadisticasGenerales(Juego juego_actual); //Procedimiento que despliega la
 //void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema - no sé si ponerlo jeee
 
 // Funciones y procedimientos generales
-
 bool sonNumeros(string); //Función para verificar que los datos ingresados son números
 int convertirOpcion(string); //Función para leer un string y devolver un int
 void esperar(); //Procedimiento para casos de error
@@ -93,52 +90,16 @@ int leerEntrada(); //Función que lee la entrada del usuario y utliza la funció
 // ************************************************************************
 
 int main () {
-    // 1. Creamos la estructura general del juego (que adentro ya tiene el arreglo y el contador)
+    // Creamos la estructura general del juego (que adentro ya tiene el arreglo y el contador)
     Juego miJuego; 
 
-    
-    // 2. Inicializamos la variable opcion
-    int opcion;
+    // Seteamos las variables en 0 para evitar errores (porque sacamos el valor de la estructura para que quede todo prolijo jeje)
+    miJuego.cantJugadores = 0;
+    miJuego.cantPartidas = 0;
 
-    // 3. Mostramos el menú y manejamos las decisiones del usuario
-    do {
-
-        menuPrincipal(); //Muestra las opciones en la consola
-
-        opcion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción en un número - no hay errores en el buffer
-
-        system("clear");
-
-        switch (opcion) {
-            case 1:// Si digita 1, entra al menú para gestionar jugadores
-                gestion(miJuego);
-                break;
-
-            case 2://Si digita 2, se debería inicializar el juego. Por el momento se despliega un mensaje.
-                cout << "Juego momentáneamente fuera de servicio :(" << endl;
-                break;
-
-            case 3://Si digital 3, se despliegan los informes de los jugadores. Por el momento se despliega un mensaje.
-                informes(miJuego);
-                break;
-                
-            case 4: //Sale del juego
-                cout << "¡Gracias por jugar a SIMON! Saliendo del programa..." << endl;
-                break;
-                    
-            default: //Sólo si opción < 1 u opción > 4
-                cout << "¡ERROR! Opción inválida. Vuelve a intentar con un número del 1 al 4." << endl;
-                esperar();
-                break;
-        }
-
-        if (opcion != 4) {
-            //esperar(); Para visualizar correctamente la opción seleccionada
-            // Por el momento lo comentamos para recordar que tenemos que realizar una función que espere un tiempo determinado antes de borrar pantalla
-            // Para que el usuario pueda visualizar los datos con éxito
-        }
-
-    } while (opcion != 4);    
+    // Desplegamos el menú principal para comenzar a jugar (o no)
+    desplegarMenuPrincipal(miJuego);
+        
   
     return 0;
 }
@@ -262,6 +223,52 @@ void menuInformes() {
     cout << "   6. Volver al menú principal" << endl;
     cout << ">> ";
 };
+
+//DENTRO DEL MENÚ PRINCIPAL
+void desplegarMenuPrincipal(Juego &juego_actual) {
+    // Inicializamos la variable opcion
+    int opcion;
+
+    // Mostramos el menú y manejamos las decisiones del usuario
+    do {
+
+        menuPrincipal(); //Muestra las opciones en la consola
+
+        opcion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción en un número - no hay errores en el buffer
+
+        system("clear");
+
+        switch (opcion) {
+            case 1:// Si digita 1, entra al menú para gestionar jugadores
+                gestion(juego_actual);
+                break;
+
+            case 2://Si digita 2, se debería inicializar el juego. Por el momento se despliega un mensaje.
+                cout << "Juego momentáneamente fuera de servicio :(" << endl;
+                break;
+
+            case 3://Si digital 3, se despliegan los informes de los jugadores. Por el momento se despliega un mensaje.
+                informes(juego_actual);
+                break;
+                
+            case 4: //Sale del juego
+                cout << "¡Gracias por jugar a SIMON! Saliendo del programa..." << endl;
+                break;
+                    
+            default: //Sólo si opción < 1 u opción > 4
+                cout << "¡ERROR! Opción inválida. Vuelve a intentar con un número del 1 al 4." << endl;
+                esperar();
+                break;
+        }
+
+        if (opcion != 4) {
+            //esperar(); Para visualizar correctamente la opción seleccionada
+            // Por el momento lo comentamos para recordar que tenemos que realizar una función que espere un tiempo determinado antes de borrar pantalla
+            // Para que el usuario pueda visualizar los datos con éxito
+        }
+
+    } while (opcion != 4);
+}
 
 //DENTRO DEL MENÚ DE INFORMES
 void informes(Juego &juego_actual) {
