@@ -38,7 +38,10 @@ struct Jugador{
 };    
 struct Juego {
     Jugador jugadores[MAX_JUGADORES];
-    int cantJugadores=0;
+    int cantJugadores = 0;
+
+    Partida partidas[MAX_PARTIDAS];
+    int cantPartidas = 0;
 };
 
 struct Partida {
@@ -64,9 +67,19 @@ bool fecha_valida(Fecha f); //Procedimiento para validar la fecha introducida po
 
 void menuGestionDeJugadores(); //Procedimiento que habilita el menú de Gestión de Jugadores
 void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección de Gestión de Jugadores
-void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
+
+// Sección de Informes
+void menuInformes(); //Procedimiento que despliega el menú de Informes
+void informes(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección Informes
+void historialDePartidas(Juego juego_actual); //Procedimiento que despliega el historial de todas las partidas jugadas
+void partidasPorJugador(Juego juego_actual); //Procedimiento que despliega una lista de todas las partidas jugadas por cada jugador
+void rankingGeneral(Juego juego_actual); //Procedimiento que despliega una lista de todos los jugadores de mayor a menor utilizando los puntajes acumulados
+void mejorJugadorPorNivel(Juego juego_actual); //Procedimiento que despliega una lista de los mejores jugadores según cada nivel
+void estadisticasGenerales(Juego juego_actual); //Procedimiento que despliega las estadísticas generales
+
+//void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema - no sé si ponerlo jeee
 
 // Funciones y procedimientos generales
 
@@ -104,7 +117,7 @@ int main () {
                 break;
 
             case 3://Si digital 3, se despliegan los informes de los jugadores. Por el momento se despliega un mensaje.
-                cout << "Informes momentáneamente fuera de servicio :(" << endl;
+                informes(miJuego);
                 break;
                 
             case 4: //Sale del juego
@@ -236,9 +249,60 @@ void menuGestionDeJugadores() {
     cout << ">> ";
 }
 
+//MENÚ PARA INFORMES
+void menuInformes() {
+    cout << "MENÚ DE INFORMES" << endl;
+    cout << "   1. Historial completo de partidas" << endl;
+    cout << "   2. Partidas por jugador" << endl;
+    cout << "   3. Ranking general (por puntaje acumulado)" << endl;
+    cout << "   4. Mejor jugador por nivel" << endl;
+    cout << "   5. Estadísticas generales" << endl;
+    cout << "   6. Volver al menú principal" << endl;
+    cout << ">> ";
+};
+
+//DENTRO DEL MENÚ DE INFORMES
+void informes(Juego &juego_actual) {
+    int opcionInformes; //Utilizamos int pero luego leemos la entrada con una función para realizaar el cambio de type sin errores
+    
+    do {
+
+        menuInformes(); //Mostramos el menú de informes
+        opcionInformes = leerEntrada(); //Usamos la función para leer la entrada y convertir a número
+        system("clear");
+
+        switch (opcionInformes) {
+        case 1:
+            cout << "Funcionalidad momentáneamente fuera de servicio :(" << endl;
+            break;
+        case 2:
+            cout << "Funcionalidad momentáneamente fuera de servicio :(" << endl;
+            break;
+        case 3:
+            cout << "Funcionalidad momentáneamente fuera de servicio :(" << endl;
+            break;
+        case 4:
+            cout << "Funcionalidad momentáneamente fuera de servicio :(" << endl;
+            break;
+        case 5:
+            cout << "Funcionalidad momentáneamente fuera de servicio :(" << endl;
+            break;
+        case 6:
+            cout << "Volviendo al menú principal..." << endl;
+            break;
+        default:
+            cout << "¡ERROR! Opción inválida. Vuelve a intentar con un número del 1 al 6." << endl;
+            esperar();
+            break;
+        }
+
+    } while (opcionInformes != 6);
+    
+}
+
 //DENTRO DEL MENÚ DE GESTIÓN
 void gestion(Juego &juego_actual) {
-    int opcionGestion; //Utilizamos int pero luego leemos la entrada con la función para realizar el cambio de type sin errores
+    int opcionGestion; //Como en informes, utilizamos int pero luego leemos la entrada con la función para realizar el cambio de type sin errores
 
     do {
 
@@ -248,6 +312,7 @@ void gestion(Juego &juego_actual) {
 
         switch (opcionGestion) {
         case 1:
+            //Usamos la función para agregar un nuevo jugador
             agregar_jugador(juego_actual);
             break;
         case 2:
@@ -297,7 +362,7 @@ void gestion(Juego &juego_actual) {
 
 }
 
-//BUSCAR UN JUGADDOR - Devuelve la posición en el arreglo si lo encuentra, o -1 si no existe
+//BUSCAR UN JUGADOR - Devuelve la posición en el arreglo si lo encuentra, o -1 si no existe
 int buscarJugador(Juego juego_actual, string aliasBuscado) {
     for (int i = 0; i < juego_actual.cantJugadores; i++) {
 
