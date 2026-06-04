@@ -58,11 +58,13 @@ Jugador crear_jugador();
 void menu();
 void imprimirJugador(Jugador j);
 bool fecha_valida(Fecha f);
-void agregar_jugador(Juego &juego_actual); //Agregar jugador no debería hacerse cuando creamos el jugador? Lo agregamos al arreglo y vamos editando el puntaje a medida que juega
-/*bool sonNumeros(string);
+void opcionesInformes(Juego &juego_actual);
+void mostrarTodosLosJugadores(Juego &juego_actual);
+void agregar_jugador(Juego &juego_actual);
+bool sonNumeros(string);
 int convertirOpcion(string);
 void esperar();
-int leerEntrada();*/
+int leerEntrada();
 
 
 // ************************************************************************
@@ -77,18 +79,15 @@ int main () {
     // 3. Mostramos el menú y manejamos las decisiones del usuario
     do {
 
-        menu();
-        cin >> opcion;
-        cin.ignore();
+        menu(); //Muestra las opciones en la consola
+
+        opcion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción en un número - no hay errores en el buffer
+
         system("clear");
 
-        if (opcion < 1 || opcion > 4) {
-            cout << "<< Opción incorrecta. Selecciona un número entre 1 y 4 para continuar. >>" << endl;
-            break;
-        }          
-    
         switch (opcion) {
-            case 1:// Si digita 1, entra a pedir los datos y guardarlos
+            case 1:// Si digita 1, entra al menú para gestionar jugadores
+            // Por ahora sólo tenemos la opción de agregar jugador
                 agregar_jugador(miJuego); 
                 break;
 
@@ -97,20 +96,24 @@ int main () {
                 break;
 
             case 3://Si digital 3, se despliegan los informes de los jugadores. Por el momento se despliega un mensaje.
-                cout << "Funcionalidad momentáneamente fuera de servicio :(" << endl;
+                opcionesInformes(miJuego);
                 break;
                 
             case 4: //Sale del juego
                 cout << "¡Gracias por jugar a SIMON! Saliendo del programa..." << endl;
                 break;
                     
-            default:
-                cout << "¡ERROR! Opción inválida. Intente con un número del 1 al 4." << endl;
+            default: //Sólo si opción < 1 u opción > 4
+                cout << "¡ERROR! Opción inválida. Vuelve a intentar con un número del 1 al 4." << endl;
                 cout << "Presione Enter para continuar...";
-                cin.get();
-                system("clear");
+                esperar();
                 break;
         }
+
+        if (opcion != 4) {
+            esperar();
+        }
+
     } while (opcion != 4);    
   
     return 0;
@@ -121,7 +124,6 @@ int main () {
 Jugador crear_jugador(){
     Jugador j;
     system("clear");
-    //cin.ignore();  por si lo necesitamos , nos dio error congela el programa
 
     cout << "Ingresa tu alias: ";
     getline(cin, j.alias); 
@@ -135,23 +137,38 @@ Jugador crear_jugador(){
     getline (cin, j.apellido);
     system("clear");
 
-    //Inicializamos el puntaje en 0 para cada jugador recientemente creado
+
+    //Inicializamos el puntaje máximo en 0 para cada jugador creado
     j.puntaje_maximo = 0;
 
     do {
+        string diaTexto;
+        string anioTexto;
         cout << "Fecha de nacimiento:" << endl << " Día >> ";
-        cin >> j.fecha_nacimiento.dia; 
-        cin.ignore();
+        getline(cin, diaTexto); //Así evitamos el error del buffer y mantenemos la lógica en todo el código (getline)
 
         cout << " Mes (número del 1 al 12) >> ";
         getline(cin, j.fecha_nacimiento.mes); 
         
         cout << " Año (mayor o igual a 2000) >> ";
-        cin >> j.fecha_nacimiento.anio;
-        cin.ignore();
+        getline(cin, anioTexto);
         system("clear");
 
-        // AQUÍ ES DONDE SE CONECTAN: Le pasamos la fecha cargada al bool
+        //Validamos y convertimos el contenido de diaTexto
+        if (diaTexto.length() > 0 && sonNumeros(diaTexto)) {
+            j.fecha_nacimiento.dia = stoi(diaTexto);
+        } else {
+            j.fecha_nacimiento.dia = -1; //Genera el error en la verificación de la fecha (fecha inválida)
+        }
+
+        //Validamos y convertimos el contenido de anioTexto
+        if (anioTexto.length() > 0 && sonNumeros(anioTexto)) {
+            j.fecha_nacimiento.anio = stoi(anioTexto);
+        } else {
+            j.fecha_nacimiento.anio = -1; //Genera el error en la verificación de la fecha (fecha inválida)
+        }
+
+        // Le pasamos la fecha cargada al bool
         if (!fecha_valida(j.fecha_nacimiento)) {
             cout << "¡ERROR! Fecha de nacimiento inválida. Intenta de nuevo." << endl;
         }
@@ -248,10 +265,10 @@ void agregar_jugador(Juego &juego_actual) {
         cout << "¡ERROR! Máximo de jugadores alcanzado." << endl;
     }
 }
-    // toma un string de entrada que representa la opción elegida 
-// chequea que sea válida y devuelve el número correspondiente, o -1 si no es correcto
 
-/*int convertirOpcion(string s) {
+// toma un string de entrada que representa la opción elegida 
+// chequea que sea válida y devuelve el número correspondiente, o -1 si no es correcto
+int convertirOpcion(string s) {
     if (!sonNumeros(s))
         return -1;
     int opcion = stoi(s);
@@ -269,8 +286,9 @@ bool sonNumeros(string s) {
 }
 
 void esperar() {
-    cout << endl << "[ PRESIONE ENTER PARA CONTINUAR ]";
-    cin.ignore();
+    string continuar;
+    cout << endl << "Presiona Enter para continuar...";
+    getline(cin, continuar);
     system("clear");
 }
 
@@ -278,4 +296,4 @@ int leerEntrada() {
     string s;
     getline(cin, s);
     return convertirOpcion(s);
-}*/
+}
