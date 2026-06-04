@@ -36,7 +36,7 @@ struct Jugador{
     Fecha fecha_nacimiento;
     bool estado;
     int puntaje_maximo;
-};    
+};  
 
 enum Resultado {COMPLETADO, PERDIDO, ABANDONADO};
 
@@ -199,7 +199,7 @@ Jugador crear_jugador(Juego &juego_actual){
 
     j.estado = true;
     return j;
-};
+}
 
 //MENÚ PRINCIPAL
 void menuPrincipal() {
@@ -210,7 +210,7 @@ void menuPrincipal() {
     cout << "   3. Informes" << endl;
     cout << "   4. Salir" << endl;
     cout << ">> ";
-};
+}
 
 //MENU PARA GESTIÓN DE JUGADORES
 void menuGestionDeJugadores() {
@@ -234,7 +234,7 @@ void menuInformes() {
     cout << "   5. Estadísticas generales" << endl;
     cout << "   6. Volver al menú principal" << endl;
     cout << ">> ";
-};
+}
 
 //DENTRO DEL MENÚ PRINCIPAL
 void desplegarMenuPrincipal(Juego &juego_actual) {
@@ -413,7 +413,7 @@ void imprimirJugador(Jugador j) {
         cout << "Estado: Inactivo" << endl;
     }
     
-};
+}
 
 //EDITAR JUGADOR
 void editarJugador(Juego juego_actual) {
