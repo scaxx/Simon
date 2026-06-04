@@ -68,6 +68,8 @@ void menuGestionDeJugadores(); //Procedimiento que habilita el menú de Gestión
 void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección de Gestión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
+void editarJugador(Jugador j, string aliasBuscado); //Procedimiento para editar jugador
+void eliminarJugador(Jugador j, string aliasBuscado); //Procedimiento para eliminar jugador
 
 // Sección de Informes
 void menuInformes(); //Procedimiento que despliega el menú de Informes
@@ -97,9 +99,8 @@ int main () {
     miJuego.cantJugadores = 0;
     miJuego.cantPartidas = 0;
 
-    // Desplegamos el menú principal para comenzar a jugar (o no)
+    // Desplegamos el menú principal para comenzar a jugar (o no jej)
     desplegarMenuPrincipal(miJuego);
-        
   
     return 0;
 }
@@ -402,6 +403,23 @@ void imprimirJugador(Jugador j) {
     }
     
 };
+
+//EDITAR JUGADOR
+void editarJugador(Juego juego_actual) {
+    string aliasBuscado;
+    system("clear");
+    
+    //Pedimos el alias para buscar el jugador que se quiere editar
+    cout << "Ingresa el alias del jugador que quieres editar" << endl;
+    getline(cin, aliasBuscado);
+
+    int posicion = buscarJugador(juego_actual, aliasBuscado);
+}
+
+//ELIMINAR JUGADOR
+void eliminarJugador(Jugador j, string aliasBuscado) {
+    
+}
 
 //COMPRUEBA SI LA FECHA INGRESADA ES VÁLIDA
 //Hay que arreglar para validar parte por parte la fecha y no todo junto
