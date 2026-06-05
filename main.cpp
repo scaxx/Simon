@@ -35,7 +35,7 @@ struct Jugador{
     string apellido;
     Fecha fecha_nacimiento;
     bool estado;
-    int puntaje_acumulado;
+    int puntaje_acumulado; //Revisar
 };  
 
 enum Resultado {COMPLETADO, PERDIDO, ABANDONADO};
@@ -71,7 +71,7 @@ bool fecha_valida(Fecha f); //Procedimiento para validar la fecha introducida po
 void menuGestionDeJugadores(); //Procedimiento que habilita el menú de Gestión de Jugadores
 void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección de Gestión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
-void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
+void imprimirJugador(Juego juego_actual); //Procedimiento para imprimir al jugador seleccionado
 void editarJugador(Juego &juego_actual); //Procedimiento para editar jugador
 void eliminarJugador(Juego &juego_actual); //Procedimiento para eliminar jugador
 
@@ -397,21 +397,36 @@ int buscarJugador(Juego juego_actual, string aliasBuscado) {
 }
 
 // IMPRIMIR DATOS DE UN JUGADOR
-void imprimirJugador(Jugador j) {
-    cout << "Alias: " << j.alias << endl;
-    cout << "Nombre: " <<j.nombre << endl;
-    cout << "Apellido: " << j.apellido << endl;
-    cout << "Fecha de nacimiento: " << endl;
-    cout << "  Día: " << j.fecha_nacimiento.dia << endl;
-    cout << "  Mes: " << j.fecha_nacimiento.mes << endl;
-    cout << "  Año: " << j.fecha_nacimiento.anio << endl;
-    cout << "Puntaje Máximo: " << j.puntaje_acumulado << endl;
+//Falta llamar a la función buscarJugador
+void imprimirJugador(Juego juego_actual) {
+    string aliasBuscado;
 
-    //Verificamos el estado actual del jugador
-    if (j.estado) {
-        cout << "Estado: Activo" << endl;
+    cout << "Ingresa el alias que deseas buscar: " << endl;
+    getline(cin, aliasBuscado);
+
+    int posicion = buscarJugador(juego_actual, aliasBuscado);
+
+    if (posicion == -1) {
+        cout << "El alias buscado no existe" << endl;
     } else {
-        cout << "Estado: Inactivo" << endl;
+
+        Jugador j = juego_actual.jugadores[posicion];
+
+        cout << "Alias: " << j.alias << endl;
+        cout << "Nombre: " <<j.nombre << endl;
+        cout << "Apellido: " << j.apellido << endl;
+        cout << "Fecha de nacimiento: " << endl;
+        cout << "  Día: " << j.fecha_nacimiento.dia << endl;
+        cout << "  Mes: " << j.fecha_nacimiento.mes << endl;
+        cout << "  Año: " << j.fecha_nacimiento.anio << endl;
+        //cout << "Puntaje Acumulado: " << j.puntaje_acumulado << endl;
+
+        //Verificamos el estado actual del jugador
+        if (j.estado) {
+            cout << "Estado: Activo" << endl;
+        } else {
+            cout << "Estado: Inactivo" << endl;
+        }
     }
     
 }
