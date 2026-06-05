@@ -35,7 +35,7 @@ struct Jugador{
     string apellido;
     Fecha fecha_nacimiento;
     bool estado;
-    int puntaje_maximo;
+    int puntaje_acumulado;
 };  
 
 enum Resultado {COMPLETADO, PERDIDO, ABANDONADO};
@@ -90,7 +90,7 @@ void estadisticasGenerales(Juego juego_actual); //Procedimiento que despliega la
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
 void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
-void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
+void editarJugador(Jugador j); //Procedimiento para editar al jugador seleccionado
 void eliminarJugador(Juego &juego_actual); //Procedimiento para eliminar jugador
 
 // Funciones y procedimientos generales
@@ -110,7 +110,7 @@ int main () {
     miJuego.cantJugadores = 0;
     miJuego.cantPartidas = 0;
 
-    // Desplegamos el menú principal para comenzar a jugar (o no jej)
+    // Desplegamos el menú principal para que el usuario pueda interactuar con el juego
     desplegarMenuPrincipal(miJuego);
   
     return 0;
@@ -130,13 +130,13 @@ Jugador crear_jugador(Juego &juego_actual){
 
         int posicionAlias = buscarJugador(juego_actual, j.alias);
 
-        //Verificamos que el alias está disponible
+        //Verificamos si el alias está disponible
         if (posicionAlias == -1) {
             aliasDisponible = true;
         } else {
-            //El alias ya existe pero está inactivo, así que devolvemos el jugador para que no pida nuevamente los datos
+            //El alias ya existe pero está inactivo, así que devolvemos los datos del jugador para que no pida nuevamente los datos
             if (juego_actual.jugadores[posicionAlias].estado == false) {
-                juego_actual.jugadores[posicionAlias].estado = true; //Seteamos el estado a true = activo
+                juego_actual.jugadores[posicionAlias].estado = true; //Seteamos el estado a true (activo)
                 cout << "¡Bienvenid@ devuelta" << juego_actual.jugadores[posicionAlias].alias << "!" << endl;
 
                 return juego_actual.jugadores[posicionAlias];
@@ -160,21 +160,14 @@ Jugador crear_jugador(Juego &juego_actual){
     getline (cin, j.apellido);
     system("clear");
 
-    //Inicializamos el puntaje máximo en 0 para cada jugador creado
-    j.puntaje_maximo = 0;
+    //Inicializamos el puntaje acumulado en 0 para cada jugador creado
+    j.puntaje_acumulado = 0;
 
     do {
         string diaTexto;
         string anioTexto;
         cout << "Fecha de nacimiento:" << endl << " Día >> ";
         getline(cin, diaTexto); //Así evitamos el error del buffer y mantenemos la lógica en todo el código (getline)
-
-        cout << " Mes (número del 1 al 12) >> ";
-        getline(cin, j.fecha_nacimiento.mes); 
-        
-        cout << " Año (mayor o igual a 2000) >> ";
-        getline(cin, anioTexto);
-        system("clear");
 
         //Validamos y convertimos el contenido de diaTexto
         if (diaTexto.length() > 0 && sonNumeros(diaTexto)) {
@@ -183,17 +176,24 @@ Jugador crear_jugador(Juego &juego_actual){
             j.fecha_nacimiento.dia = -1; //Genera el error en la verificación de la fecha (fecha inválida)
         }
 
+        cout << " Mes (número del 1 al 12) >> ";
+        getline(cin, j.fecha_nacimiento.mes); 
+
         //Validamos y convertimos el contenido de anioTexto
         if (anioTexto.length() > 0 && sonNumeros(anioTexto)) {
             j.fecha_nacimiento.anio = stoi(anioTexto);
         } else {
             j.fecha_nacimiento.anio = -1; //Genera el error en la verificación de la fecha (fecha inválida)
         }
+        
+        cout << " Año (mayor o igual a 2000) >> ";
+        getline(cin, anioTexto);
+        system("clear");
 
         // Le pasamos la fecha cargada al bool
         if (!fecha_valida(j.fecha_nacimiento)) {
             cout << "¡ERROR! Fecha de nacimiento inválida. Intenta de nuevo." << endl;
-        }
+        } //Arreglar validación para que revise campo por campo
 
     } while (!fecha_valida(j.fecha_nacimiento)); // Se repite si bool da false
 
@@ -238,7 +238,7 @@ void menuInformes() {
 
 //DENTRO DEL MENÚ PRINCIPAL
 void desplegarMenuPrincipal(Juego &juego_actual) {
-    // Inicializamos la variable opcion
+    // Inicializamos la variable opcion donde se guarda la elección del usuario
     int opcion;
 
     // Mostramos el menú y manejamos las decisiones del usuario
@@ -246,7 +246,7 @@ void desplegarMenuPrincipal(Juego &juego_actual) {
 
         menuPrincipal(); //Muestra las opciones en la consola
 
-        opcion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción en un número - no hay errores en el buffer
+        opcion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción en un número (no hay errores en el buffer)
 
         system("clear");
 
@@ -255,11 +255,11 @@ void desplegarMenuPrincipal(Juego &juego_actual) {
                 gestion(juego_actual);
                 break;
 
-            case 2://Si digita 2, se debería inicializar el juego. Por el momento se despliega un mensaje.
+            case 2://Si digita 2, se debería inicializar el juego. Por el momento se despliega un mensaje
                 cout << "Juego momentáneamente fuera de servicio :(" << endl;
                 break;
 
-            case 3://Si digital 3, se despliegan los informes de los jugadores. Por el momento se despliega un mensaje.
+            case 3://Si digital 3, se despliegan los informes de los jugadores
                 informes(juego_actual);
                 break;
                 
@@ -284,12 +284,12 @@ void desplegarMenuPrincipal(Juego &juego_actual) {
 
 //DENTRO DEL MENÚ DE INFORMES
 void informes(Juego &juego_actual) {
-    int opcionInformes; //Utilizamos int pero luego leemos la entrada con una función para realizaar el cambio de type sin errores
+    int opcionInformes; //Utilizamos int pero luego leemos la entrada con una función para realizar el cambio de type sin errores
     
     do {
 
         menuInformes(); //Mostramos el menú de informes
-        opcionInformes = leerEntrada(); //Usamos la función para leer la entrada y convertir a número
+        opcionInformes = leerEntrada(); //Usamos la función para leer con getline y convertir a número
         system("clear");
 
         switch (opcionInformes) {
@@ -328,7 +328,7 @@ void gestion(Juego &juego_actual) {
     do {
 
         menuGestionDeJugadores(); //Mostramos el menú de gestión
-        opcionGestion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción a un número - no hay errores en el buffer
+        opcionGestion = leerEntrada(); //Usamos la función para leer con getline y convertir la opción a un número (no hay errores en el buffer)
         system("clear");
 
         switch (opcionGestion) {
@@ -337,12 +337,13 @@ void gestion(Juego &juego_actual) {
             agregar_jugador(juego_actual);
             break;
         case 2:
+            //Usamos la función para eliminar un jugador - Habría que implementar una validación para que puedas eliminar únicamente los datos del propio jugador?
             eliminarJugador(juego_actual);
             break;
         case 3:
             cout << "Opción en desarrollo" << endl;
             break;
-        case 4: {
+        case 4: { //Creo que podemos hacer una función para esto sin necesidad de desplegarlo en el menú
             //Definimos la variable que vamos a necesitar para buscar el alias del usuario
             string aliasBuscado;
             cout << "Por favor, ingresa el alias que deseas buscar: " << endl;
@@ -383,7 +384,7 @@ void gestion(Juego &juego_actual) {
 
 }
 
-//BUSCAR UN JUGADOR - Devuelve la posición en el arreglo si lo encuentra, o -1 si no existe
+//BUSCAR UN JUGADOR - Devuelve la posición en el arreglo si lo encuentra o -1 si no existe
 int buscarJugador(Juego juego_actual, string aliasBuscado) {
     for (int i = 0; i < juego_actual.cantJugadores; i++) {
 
@@ -404,7 +405,7 @@ void imprimirJugador(Jugador j) {
     cout << "  Día: " << j.fecha_nacimiento.dia << endl;
     cout << "  Mes: " << j.fecha_nacimiento.mes << endl;
     cout << "  Año: " << j.fecha_nacimiento.anio << endl;
-    cout << "Puntaje Máximo: " << j.puntaje_maximo << endl;
+    cout << "Puntaje Máximo: " << j.puntaje_acumulado << endl;
 
     //Verificamos el estado actual del jugador
     if (j.estado) {
