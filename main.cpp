@@ -86,13 +86,6 @@ void estadisticasGenerales(Juego juego_actual); //Procedimiento que despliega la
 
 //void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema - no sé si ponerlo jeee
 
-// Sección de gestión de Jugadores
-int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
-void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador seleccionado
-int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
-void editarJugador(Jugador j); //Procedimiento para editar al jugador seleccionado
-void eliminarJugador(Juego &juego_actual); //Procedimiento para eliminar jugador
-
 // Funciones y procedimientos generales
 bool sonNumeros(string); //Función para verificar que los datos ingresados son números
 int convertirOpcion(string); //Función para leer un string y devolver un int
