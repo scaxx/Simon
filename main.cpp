@@ -169,6 +169,13 @@ Jugador crear_jugador(Juego &juego_actual){
         cout << "Fecha de nacimiento:" << endl << " Día >> ";
         getline(cin, diaTexto); //Así evitamos el error del buffer y mantenemos la lógica en todo el código (getline)
 
+        cout << " Mes (número del 1 al 12) >> ";
+        getline(cin, j.fecha_nacimiento.mes); 
+        
+        cout << " Año (mayor o igual a 2000) >> ";
+        getline(cin, anioTexto);
+        system("clear");
+
         //Validamos y convertimos el contenido de diaTexto
         if (diaTexto.length() > 0 && sonNumeros(diaTexto)) {
             j.fecha_nacimiento.dia = stoi(diaTexto);
@@ -176,19 +183,12 @@ Jugador crear_jugador(Juego &juego_actual){
             j.fecha_nacimiento.dia = -1; //Genera el error en la verificación de la fecha (fecha inválida)
         }
 
-        cout << " Mes (número del 1 al 12) >> ";
-        getline(cin, j.fecha_nacimiento.mes); 
-
         //Validamos y convertimos el contenido de anioTexto
         if (anioTexto.length() > 0 && sonNumeros(anioTexto)) {
             j.fecha_nacimiento.anio = stoi(anioTexto);
         } else {
             j.fecha_nacimiento.anio = -1; //Genera el error en la verificación de la fecha (fecha inválida)
         }
-        
-        cout << " Año (mayor o igual a 2000) >> ";
-        getline(cin, anioTexto);
-        system("clear");
 
         // Le pasamos la fecha cargada al bool
         if (!fecha_valida(j.fecha_nacimiento)) {
@@ -343,27 +343,10 @@ void gestion(Juego &juego_actual) {
         case 3:
             cout << "Opción en desarrollo" << endl;
             break;
-        case 4: { //Creo que podemos hacer una función para esto sin necesidad de desplegarlo en el menú
-            //Definimos la variable que vamos a necesitar para buscar el alias del usuario
-            string aliasBuscado;
-            cout << "Por favor, ingresa el alias que deseas buscar: " << endl;
-            getline(cin, aliasBuscado);
-
-            //Usamos la función que definimos para buscar usuarios mediante el alias
-            int posicion = buscarJugador(juego_actual, aliasBuscado);
-
-            //Verificamos los resultados que devuelve la función
-            if (posicion == -1) {
-                //Si posicion -1 el alias no existe, por tanto el jugador no existe
-                cout << "¡Lo sentimos! No se encontró ningún jugador con el alias " << aliasBuscado << "." << endl;
-            } else {
-                //Posición != -1 significa que el alias existe y se devuelve su posición correspondiente en el arreglo
-                cout << "JUGADOR " << aliasBuscado << " ENCONTRADO:" << endl;
-                //Usamos la función para imprimir y devolvemos todos los datos del jugador
-                imprimirJugador(juego_actual.jugadores[posicion]);
-            }
+        case 4:
+            //Usamos la función para imprimir
+            imprimirJugador(juego_actual);
             break;
-        }
         case 5:
             cout << "Opción en desarrollo" << endl;
             break;
@@ -547,7 +530,7 @@ void agregar_jugador(Juego &juego_actual) {
             juego_actual.jugadores[juego_actual.cantJugadores] = resultado;
             
             cout << "JUGADOR REGISTRADO CON ÉXITO" << endl;
-            imprimirJugador(juego_actual.jugadores[juego_actual.cantJugadores]);
+            //imprimirJugador(juego_actual.jugadores[juego_actual.cantJugadores]);
             
             juego_actual.cantJugadores++; // Sumamos 1 al contador de jugadores
         }
