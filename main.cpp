@@ -476,7 +476,7 @@ bool fecha_valida(Fecha f) {
     }
 
     // 2. Validar que el día no sea negativo o cero
-    if (f.dia < 1 || f.dia > 31) {
+    if ((f.dia < 1 || f.dia < 01) || f.dia > 31) {
         cout << "¡ERROR! El día ingresado no es válido." << endl;
         return false;
     }
@@ -484,15 +484,15 @@ bool fecha_valida(Fecha f) {
     // 3. Determinar el límite de días según el mes escrito por el usuario
     int max_dias=0;
     // No tuvimos en cuenta el año bisciesto ¡¡te queremos Nico!!
-    if (f.mes == "2") {
+    if (f.mes == "2" || f.mes == "02") {
             max_dias = 28;
     } 
     // Meses con 30 días
-    else if (f.mes == "4" || f.mes == "6" || f.mes == "9" || f.mes == "11") {
+    else if (f.mes == "4" || f.mes == "04" || f.mes == "6" || f.mes == "06" || f.mes == "9" || f.mes == "09" || f.mes == "11") {
         max_dias = 30;
     } 
     //Meses con 31 días
-    else if (f.mes == "1" || f.mes == "3" || f.mes == "5" || f.mes == "7" || f.mes == "8" || f.mes == "10" || f.mes == "12"){
+    else if (f.mes == "1" || f.mes == "01" || f.mes == "3" || f.mes == "03" || f.mes == "5" || f.mes == "05" || f.mes == "7" || f.mes == "07" || f.mes == "8" || f.mes == "08" || f.mes == "10" || f.mes == "12"){
         max_dias = 31;
     }
     //Si se ingresa algo diferente de los números esperados. 
