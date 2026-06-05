@@ -403,6 +403,7 @@ void imprimirJugador(Juego juego_actual) {
         } else {
             cout << "Estado: Inactivo" << endl;
         }
+        cout << endl;
     }
     
 }
