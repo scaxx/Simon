@@ -1,5 +1,7 @@
 #include <iostream> 
 #include <unistd.h>
+#include <cstdlib> // Contiene rand y srand
+#include <ctime>   // Contiene time()
 
 // --- CONSTANTES DEL SISTEMA ---
 
@@ -71,9 +73,21 @@ bool fecha_valida(Fecha f); //Procedimiento para validar la fecha introducida po
 void menuGestionDeJugadores(); //Procedimiento que habilita el menú de Gestión de Jugadores
 void gestion(Juego &juego_actual); //Procedimiento que permite operar dentro de la sección de Gestión de Jugadores
 int buscarJugador(Juego juego_actual, string aliasBuscado); //Procedimiento para buscar a un jugador en específico mediante el alias
-void imprimirJugador(Juego juego_actual); //Procedimiento para imprimir al jugador seleccionado
+void imprimirJugador(Juego juego_actual); //Procedimiento para imprimir un jugador
 void editarJugador(Juego &juego_actual); //Procedimiento para editar jugador
-void eliminarJugador(Juego &juego_actual); //Procedimiento para eliminar jugador
+void bajaJugador (Juego &juego_actual); // Pasa el jugador de activo a inactivo
+void consultarJugador(Juego juego_actual); //Procedimiento que imprime los datos del Alias consultado
+void listaDeJugadores(Juego &juego_actual);
+//void eliminarJugador(Juego &juego_actual); //Procedimiento para eliminar jugador
+
+
+
+//JUEGO
+void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); 
+void comenzarPartida (Juego &juego_actual);
+
+
+
 
 // Sección de Informes
 void menuInformes(); //Procedimiento que despliega el menú de Informes
@@ -96,6 +110,9 @@ int leerEntrada(); //Función que lee la entrada del usuario y utliza la funció
 // ************************************************************************
 
 int main () {
+    // ACTIVAR LA SEMILLA ALEATORIA (Se hace UNA sola vez al principio de todo)
+    srand(time(0));
+
     // Creamos la estructura general del juego (que adentro ya tiene el arreglo y el contador)
     Juego miJuego; 
 
@@ -249,7 +266,7 @@ void desplegarMenuPrincipal(Juego &juego_actual) {
                 break;
 
             case 2://Si digita 2, se debería inicializar el juego. Por el momento se despliega un mensaje
-                cout << "Juego momentáneamente fuera de servicio :(" << endl;
+                comenzarPartida(juego_actual);
                 break;
 
             case 3://Si digital 3, se despliegan los informes de los jugadores
@@ -326,22 +343,24 @@ void gestion(Juego &juego_actual) {
 
         switch (opcionGestion) {
         case 1:
-            //Usamos la función para agregar un nuevo jugador
-            agregar_jugador(juego_actual);
+            cout << "---- ALTA DE JUGADOR ----"<< endl;
+            agregar_jugador(juego_actual);//Usamos la función para agregar un nuevo jugador
             break;
         case 2:
-            //Usamos la función para eliminar un jugador - Habría que implementar una validación para que puedas eliminar únicamente los datos del propio jugador?
-            eliminarJugador(juego_actual);
+            cout << "---- BAJA DE JUGADOR ----"<< endl;
+            bajaJugador(juego_actual);//Usamos la función para dar de baja sin eliminar
             break;
         case 3:
-            cout << "Opción en desarrollo" << endl;
+            cout << "---- MODIFICACIÓN DE JUGADOR ----"<< endl;
+            editarJugador(juego_actual); 
             break;
         case 4:
-            //Usamos la función para imprimir
-            imprimirJugador(juego_actual);
+            cout << "---- CONSULTA DE JUGADOR ----"<< endl;
+            consultarJugador(juego_actual);//Usamos la función para imprimir los datos de ese jugador consultado
             break;
         case 5:
-            cout << "Opción en desarrollo" << endl;
+            cout << "---- CONSULTA DE JUGADORES ----"<< endl;
+            listaDeJugadores(juego_actual); 
             break;
         case 6:
             cout << "Regresando al menú principal..." << endl;
@@ -372,55 +391,177 @@ int buscarJugador(Juego juego_actual, string aliasBuscado) {
     return -1; //Si no encontramos el alias, termina el bucle for y devuelve -1
 }
 
-// IMPRIMIR DATOS DE UN JUGADOR
-//Falta llamar a la función buscarJugador
-void imprimirJugador(Juego juego_actual) {
-    string aliasBuscado;
+// IMPRIMIR DATOS DE UN JUGADOR 
+void imprimirJugador(Jugador j) {
+    cout << "Alias: " << j.alias << endl;
+    cout << "Nombre: " << j.nombre << endl;
+    cout << "Apellido: " << j.apellido << endl;
+    cout << "Fecha de nacimiento: " 
+         << j.fecha_nacimiento.dia << "/" 
+         << j.fecha_nacimiento.mes << "/" 
+         << j.fecha_nacimiento.anio << endl;
+    
+    if (j.estado) {
+        cout << "Estado: Activo" << endl;
+    } else {
+        cout << "Estado: Inactivo" << endl;
+    }
+    cout << "---------------------------------------" << endl;
+}
 
-    cout << "Ingresa el alias que deseas buscar: " << endl;
+//BAJA DE JUGADOR (Punto 4.2)
+void bajaJugador(Juego &juego_actual) {
+    string aliasBuscado;
+    system("clear");
+    cout << "---- BAJA DE JUGADOR ---" << endl;
+    cout << "Ingresa el alias del jugador que deseas dar de baja: " << endl;
     getline(cin, aliasBuscado);
 
     int posicion = buscarJugador(juego_actual, aliasBuscado);
-
-    if (posicion == -1) {
-        cout << "El alias buscado no existe" << endl;
-    } else {
-
-        Jugador j = juego_actual.jugadores[posicion];
-
-        cout << "Alias: " << j.alias << endl;
-        cout << "Nombre: " <<j.nombre << endl;
-        cout << "Apellido: " << j.apellido << endl;
-        cout << "Fecha de nacimiento: " << endl;
-        cout << "  Día: " << j.fecha_nacimiento.dia << endl;
-        cout << "  Mes: " << j.fecha_nacimiento.mes << endl;
-        cout << "  Año: " << j.fecha_nacimiento.anio << endl;
-        //cout << "Puntaje Acumulado: " << j.puntaje_acumulado << endl;
-
-        //Verificamos el estado actual del jugador
-        if (j.estado) {
-            cout << "Estado: Activo" << endl;
-        } else {
-            cout << "Estado: Inactivo" << endl;
-        }
-        cout << endl;
-    }
     
+    if (posicion == -1) { // SI NO EXISTE
+        cout << "No se encontró ningún jugador con el alias " << aliasBuscado << endl;
+        esperar();
+    } 
+    else { // SI EXISTE INACTIVO
+        if (juego_actual.jugadores[posicion].estado == false) { 
+            cout << "El jugador '" << aliasBuscado << "' ya se encuentra inactivo en el sistema." << endl;
+        } 
+        else { // SI EXISTE ACTVO 
+            juego_actual.jugadores[posicion].estado = false; 
+            cout << "¡Jugador " << aliasBuscado << " dado de baja con éxito! (Estado: Inactivo)" << endl;
+        }
+        esperar(); 
+    }
 }
 
-//EDITAR JUGADOR
-void editarJugador(Juego juego_actual) {
+//EDITAR JUGADOR (Punto 4.3)
+void editarJugador(Juego &juego_actual) {
     string aliasBuscado;
     system("clear");
-
     //Pedimos el alias para buscar el jugador que se quiere editar
     cout << "Ingresa el alias del jugador que quieres editar" << endl;
     getline(cin, aliasBuscado);
 
     int posicion = buscarJugador(juego_actual, aliasBuscado);
+    if (posicion == -1)
+    {
+        cout << "Error, el alias ingresado no se encuentra registrado." << endl;
+    }
+    else{
+        if(juego_actual.jugadores[posicion].estado == false){
+            cout << "El jugador está inactivo, solo puede editar jugadores activios. Vuelve a intentarlo" << endl;
+        }
+        else{
+            cout << "Ingresa el nuevo nombre: ";
+            getline(cin, juego_actual.jugadores[posicion].nombre); //Nombre actualizado
+
+            cout << "Ingresa el nuevo apellido: ";
+            getline(cin, juego_actual.jugadores[posicion].apellido); //Apellido actualizado
+            
+            do {
+                string diaTexto;
+                string anioTexto;
+                cout << "Fecha de nacimiento:" << endl << " Día >> ";
+                getline(cin, diaTexto); //Así evitamos el error del buffer y mantenemos la lógica en todo el código (getline)
+
+                cout << " Mes (número del 1 al 12) >> ";
+                getline (cin, juego_actual.jugadores[posicion].fecha_nacimiento.mes); 
+        
+                cout << " Año (mayor o igual a 2000) >> ";
+                getline(cin, anioTexto);
+                system("clear");
+
+                //Validamos y convertimos el contenido de diaTexto
+                if (diaTexto.length() > 0 && sonNumeros(diaTexto)) {
+                    juego_actual.jugadores[posicion].fecha_nacimiento.dia = stoi(diaTexto);
+                } else {
+                   juego_actual.jugadores[posicion].fecha_nacimiento.dia = -1; //Genera el error en la verificación de la fecha (fecha inválida)
+                }
+
+                //Validamos y convertimos el contenido de anioTexto
+                if (anioTexto.length() > 0 && sonNumeros(anioTexto)) {
+                    juego_actual.jugadores[posicion].fecha_nacimiento.anio = stoi(anioTexto);
+                } else {
+                    juego_actual.jugadores[posicion].fecha_nacimiento.anio = -1; //Genera el error en la verificación de la fecha (fecha inválida)
+                }
+
+        // Le pasamos la fecha cargada al bool
+        if (!fecha_valida(juego_actual.jugadores[posicion].fecha_nacimiento)) {
+            cout << "¡ERROR! Fecha de nacimiento inválida. Intenta de nuevo." << endl;
+        } //Arreglar validación para que revise campo por campo
+
+    } while (!fecha_valida(juego_actual.jugadores[posicion].fecha_nacimiento)); // Se repite si bool da false
+    cout << "¡Jugador modificado con éxito!" << endl;
+            esperar();
+        }
+    
+    }
 }
 
-//ELIMINAR JUGADOR
+// CONSULTAR JUGADOR (Punto 4.4)
+void consultarJugador(Juego juego_actual) {
+    string aliasBuscado;
+    system("clear");
+    cout << "--- CONSULTAR JUGADOR ---" << endl;
+    cout << "Ingresa el alias del jugador que deseas buscar: ";
+    getline(cin, aliasBuscado);
+
+    int posicion = buscarJugador(juego_actual, aliasBuscado); // Buscamos la posición del jugador en el arreglo
+
+    if (posicion == -1) {
+        cout << endl << "El alias '" << aliasBuscado << "' no existe en el sistema." << endl;
+    } else {
+        cout << endl << "--- DATOS ENCONTRADOS ---" << endl; 
+        imprimirJugador(juego_actual.jugadores[posicion]);// Reutilizamos la función de imprimirJugador 
+    }
+    esperar(); // Para que el usuario pueda ver los datos antes de borrar la pantalla
+}
+
+// LISTADO LOS JUGADORES ACTIVOS EN ORDEN ALFABÉTICO 4.5
+void listaDeJugadores(Juego &juego_actual) {
+     // VALIDACIÓN: Si no hay jugadores en el sistema
+    if (juego_actual.cantJugadores == 0) {
+        cout << "No hay ningún jugador registrado en el sistema." << endl;
+        esperar();
+        return;
+    } 
+    //BUCLE DE ORDENAMIENTO BURBUJA 
+    for ( int i = 0; i<juego_actual.cantJugadores - 1; i++){
+        for ( int j = 0; j< juego_actual.cantJugadores -1; j++){
+            if(juego_actual.jugadores[j].alias > juego_actual.jugadores[j+1].alias){
+                Jugador aux = juego_actual.jugadores[j]; //Uso aux para no perder ningun dato
+                juego_actual.jugadores[j] = juego_actual.jugadores[j+1]; //El de la derecha pasa a la izquierda
+                juego_actual.jugadores[j+1] = aux; //El aux pasa a la derecha
+            }
+        }
+    }
+    // BUCLE DE IMPRESIÓN
+    int contadorActivos = 0; // Para saber si realmente imprimimos a alguien
+    system("clear");
+    cout << "=================================================================" << endl;
+    cout << "                      LISTA DE JUGADORES ACTIVOS                 " << endl;
+    cout << "=================================================================" << endl;
+
+    for ( int i = 0 ; i < juego_actual.cantJugadores ; i++){
+        if (juego_actual.jugadores[i].estado == true){
+            imprimirJugador( juego_actual.jugadores[i]);
+            contadorActivos++;
+        }
+    }
+    // Si el contador quedó en 0 significa que todos los registrados están INACTIVOS
+    if (contadorActivos == 0) {
+        cout << "No hay jugadores activos en este momento en el sistema." << endl;
+    } else {
+        cout << "Total de jugadores activos mostrados: " << contadorActivos << endl;
+    }
+
+    cout << "=================================================================" << endl;
+    esperar(); // Pausa para que el usuario pueda leer la lista con calma
+}
+
+/*
+//ELIMINAR JUGADOR ojoooo no se si va esto!!
 void eliminarJugador(Juego &juego_actual) {
     string aliasBuscado;
     system("clear");
@@ -452,7 +593,8 @@ void eliminarJugador(Juego &juego_actual) {
         }        
     }
     
-}
+}*/
+
 
 //COMPRUEBA SI LA FECHA INGRESADA ES VÁLIDA
 //Hay que arreglar para validar parte por parte la fecha y no todo junto
@@ -566,3 +708,84 @@ int leerEntrada() {
     getline(cin, s);
     return convertirOpcion(s);
 }
+
+// ********************* JUEGO PUNTO 5  **************************************
+
+// PARA INICIAR UNA PARTIDA (Punto 5)
+void comenzarPartida(Juego &juego_actual){
+    system("clear");
+    cout << "Iniciando la partida de SIMON" << endl;
+
+    string aliasBuscado; //SOLICITAR ALIAS
+    cout << "Ingresa el Alias con el que deseas jugar" << endl;
+    getline(cin, aliasBuscado);
+
+    int posicion = buscarJugador(juego_actual, aliasBuscado); 
+
+    if (posicion == -1){
+        cout << "ERROR \n El alias" << aliasBuscado << " no se encuentra en el sistema. " << endl;
+        cout << "Debes darte de alta en el menú de Gestión de Jugadores. " << endl;
+        esperar();
+        return; //corta y vuelve al menú principal
+    } 
+    if (juego_actual.jugadores[posicion].estado == false){
+        cout << "ERROR \n El juegador" << aliasBuscado << " se encuentra INACTIVO." << endl;
+        cout << "No puedes juegas hasta volver a estar activo." << endl;
+        cout << "En Gestión de juadaores debes darte de alta." << endl;
+        esperar();
+        return; //corta y vuelve al menu principal
+    }
+
+    //PASÓ LOS FILTOS, ASIQUE ESTÁ ACTIVO Y PUEDE JUGAR
+    cout << "Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].nombre << "!" << endl;
+
+}
+
+//NIVELES (Punto 5.1)
+
+
+
+
+
+// DESARROLLO DE PARTIDAS (Punto 5.2 -1)
+// Función que llena el arreglo de la secuencia con colores aleatorios
+void generarSecuenciaAleatoria (char secuencia[], int largoDificultad){
+
+    // Recorremos el arreglo hasta el largo máximo del nivel elegido
+    for (int i = 0; i < largoDificultad; i++) {   
+        int numero = rand() % 4; // 1. Generamos un número aleatorio entre 0 y 3
+        switch (numero) { // 2. Convertimos ese número en la letra correspondiente
+            case 0:
+                secuencia[i] = 'R'; // Rojo
+                break;
+            case 1:
+                secuencia[i] = 'V'; // Verde
+                break;
+            case 2:
+                secuencia[i] = 'A'; // Azul
+                break;
+            case 3:
+                secuencia[i] = 'N'; // Naranja
+                break;
+        }
+    }
+
+}
+
+
+// REGISTRO DE PARTIDAD (Punto 6)
+
+
+// INFORMES (punto 7)
+//HISTOIAL COMPLETO DE PARTIDAD (Punto 7.1)
+
+
+//PARTIDAS POR JUGAR (Punto 7.2)
+
+//RANKING GENERAL (Punto 7.3)
+
+//MEJOR JUGADOR POR NIVEL (Punto 7.4)
+
+//ESTADISTICAS GENERALES (Punto 7.5)
+
+//CHEQUEAR VALIDACIONES punto 8
