@@ -87,6 +87,7 @@ void listaDeJugadores(Sistema &juego_actual); //Procedimiento que despliega la l
 //JUEGO
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); 
 void comenzarPartida (Sistema &juego_actual);
+void registrarPArtida(Sistema &juego_actual, Partida nueva_partida); //Procedimiento para registrar una partida en el arreglo partidas
 
 // Sección de Informes
 void menuInformes(); //Procedimiento que despliega el menú de Informes
@@ -535,11 +536,11 @@ void consultarJugador(Sistema juego_actual) {
 
     int posicion = buscarJugador(juego_actual, aliasBuscado); // Buscamos la posición del jugador en el arreglo
 
-    if (posicion == -1) {
+    if (posicion == -1) { //No se encuentra el alias
         cout << endl << "El alias '" << aliasBuscado << "' no existe en el sistema." << endl;
     } else {
         cout << endl << "--- DATOS ENCONTRADOS ---" << endl; 
-        imprimirJugador(juego_actual.jugadores[posicion]);// Reutilizamos la función de imprimirJugador 
+        imprimirJugador(juego_actual.jugadores[posicion]);// Utilizamos la función de imprimirJugador 
     }
     esperar(); // Para que el usuario pueda ver los datos antes de borrar la pantalla
 }
@@ -548,7 +549,7 @@ void consultarJugador(Sistema juego_actual) {
 
 //LISTA DE JUGADORES
 
-// LISTADO DE LOS JUGADORES ACTIVOS EN ORDEN ALFABÉTICO 4.5
+// LISTADO DE LOS JUGADORES ACTIVOS EN ORDEN ALFABÉTICO
 void listaDeJugadores(Sistema &juego_actual) {
      // VALIDACIÓN: Si no hay jugadores en el sistema
     if (juego_actual.cantJugadores == 0) {
@@ -557,10 +558,10 @@ void listaDeJugadores(Sistema &juego_actual) {
         return;
     } 
     //BUCLE DE ORDENAMIENTO BURBUJA 
-    for ( int i = 0; i<juego_actual.cantJugadores - 1; i++){
-        for ( int j = 0; j< juego_actual.cantJugadores -1; j++){
+    for ( int i = 0; i < juego_actual.cantJugadores - 1; i++){
+        for ( int j = 0; j < juego_actual.cantJugadores -1; j++){
             if(juego_actual.jugadores[j].alias > juego_actual.jugadores[j+1].alias){
-                Jugador aux = juego_actual.jugadores[j]; //Uso aux para no perder ningun dato
+                Jugador aux = juego_actual.jugadores[j]; //Uso aux para no perder ningún dato
                 juego_actual.jugadores[j] = juego_actual.jugadores[j+1]; //El de la derecha pasa a la izquierda
                 juego_actual.jugadores[j+1] = aux; //El aux pasa a la derecha
             }
@@ -654,7 +655,24 @@ void generarSecuenciaAleatoria (char secuencia[], int largoDificultad){
 }
 
 
-// REGISTRO DE PARTIDAD (Punto 6)
+// REGISTRO DE PARTIDAS (Punto 6)
+void registrarPartida(Sistema &juego_actual, Partida partida_nueva) {
+    
+    if (juego_actual.cantPartidas < MAX_PARTIDAS) { //Si hay lugar en el arreglo partidas
+
+        juego_actual.partidas[juego_actual.cantPartidas] = partida_nueva; //Guardamos los datos de la partida actual en la posición correspondiente
+        juego_actual.cantPartidas++; //Aumentamos el contador de partidas
+        
+        int posicion = buscarJugador(juego_actual, partida_nueva.aliasJugador); //Buscamos la posición del jugador mediante su alias
+
+        juego_actual.jugadores[posicion].puntaje_acumulado += partida_nueva.puntajeObtenido; //Le sumo los puntos correspondientes al jugador en el arreglo jugadores usando su alias
+
+    } else { //Si no hay lugar en el arreglo
+        cout << "Máximo de partidas guardadas alcanzado :( ...)" << endl;
+        esperar();
+    }
+
+}
 
 
 // INFORMES (punto 7)
