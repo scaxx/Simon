@@ -224,8 +224,6 @@ void gestion(Sistema &juego_actual) {
             break;
         case 2:
             cout << "---- BAJA DE JUGADOR ----"<< endl;
-            //Usamos la función para eliminar un jugador - Habría que implementar una validación para que puedas eliminar únicamente los datos del propio jugador?
-            //eliminarJugador(juego_actual);
             //Usamos la función para dar de baja sin eliminar
             bajaJugador(juego_actual);
             break;
@@ -715,7 +713,14 @@ void mostrarPartidasPorJugador(Sistema juego_actual) {
         for (int i = 0; i < juego_actual.cantPartidas; i++) {
             if (juego_actual.partidas[i].aliasJugador == aliasBuscado) {
                 cout << "Jugador: " << juego_actual.partidas[i].aliasJugador << endl;
-                cout << "Nivel: " << juego_actual.partidas[i].nivel << endl;
+                //cout << "Nivel: " << juego_actual.partidas[i].nivel << endl; //  cuando imprimimos el nivel solo dice 0,1 o 2 
+                cout << "Nivel: ";
+                switch(juego_actual.partidas[i].nivel) {
+                    case PRINCIPIANTE: cout << "Principiante"; break;
+                    case INTERMEDIO:   cout << "Intermedio"; break;
+                    case AVANZADO:     cout << "Avanzado"; break;
+                }
+                cout << endl;
                 cout << "Puntaje: " << juego_actual.partidas[i].puntajeObtenido << endl;
                 cout << "Resultado: " << juego_actual.partidas[i].resultado << endl;
                 cout << "=================================================================" << endl;
@@ -750,7 +755,7 @@ void rankingGeneral(Sistema juego_actual) {
         //Hacemos un for para recorrer el arreglo de jugadores que ya están ordenados
         for (int i = 0; i < juego_actual.cantJugadores; i++) {
             
-            //Imprimimos los datos
+            //Imprimimos los datos ALIAS Y PUNTAJE 
             cout << i + 1 << " - " << juego_actual.jugadores[i].alias << endl;
             cout << "Puntaje: " << juego_actual.jugadores[i].puntaje_acumulado << endl;
             cout << "=================================================================" << endl;
@@ -763,8 +768,61 @@ void rankingGeneral(Sistema juego_actual) {
 }
 
 //MEJOR JUGADOR POR NIVEL
+void mejorJugadorPorNivel (Sistema juego_actual){
+int maxPrincipiante = -1;
+string aliasPrincipiante = "";
+
+int maxIntermedio = -1;
+string aliasIntermedio = "";
+
+int maxAvanzado = -1;
+string aliasAvanzado = "";
+
+for (int i = 0 ; i < juego_actual.cantPartidas; i++ ){
+    if(juego_actual.partidas[i].nivel == PRINCIPIANTE){
+        if (juego_actual.partidas[i].puntajeObtenido > maxPrincipiante){
+            maxPrincipiante = juego_actual.partidas[i].puntajeObtenido;
+            aliasPrincipiante = juego_actual.partidas[i].aliasJugador;
+        }
+    }
+    else if (juego_actual.partidas[i].nivel == INTERMEDIO){
+        if(juego_actual.partidas[i].puntajeObtenido > maxIntermedio){
+            maxIntermedio= juego_actual.partidas[i].puntajeObtenido;
+            aliasIntermedio = juego_actual.partidas[i].aliasJugador;
+        } 
+    }
+    else if (juego_actual.partidas[i].nivel == AVANZADO){
+        if(juego_actual.partidas[i].puntajeObtenido> maxAvanzado){
+            maxAvanzado = juego_actual.partidas[i].puntajeObtenido;
+            aliasAvanzado = juego_actual.partidas[i].aliasJugador;
+        }
+    }
+
+}
+cout << "--- Mejores jugadores por NIVEL ---" << endl;
+    if (maxPrincipiante == -1){
+        cout << "Nivel Principiante: No hay partidas registradas en este nivel." << endl;
+    }
+     else {
+        cout << "Nivel Princpiante: " << aliasPrincipiante << " con " << maxPrincipiante << "puntos." << endl;
+     }
+ if (maxIntermedio == -1){
+        cout << "No hay jugadores que hayan jugado en este nivel" << endl;
+ }else {
+        cout << "Nivel Intermedio: " << aliasIntermedio << " con " << maxIntermedio << "puntos." << endl;
+     }
+  if (maxAvanzado == -1){
+        cout << "No hay jugadores que hayan jugado en este nivel" << endl;
+    }else {
+        cout << "Nivel Avanzado: " << aliasAvanzado << " con " << maxAvanzado << "puntos." << endl;
+     }
+
+}
 
 //ESTADISTICAS GENERALES
+void estadisticasGenerales(Sistema juego_actual){
+    
+}
 
 //CHEQUEAR VALIDACIONES punto 8
 
