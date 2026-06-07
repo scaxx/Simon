@@ -87,12 +87,12 @@ void listaDeJugadores(Sistema &juego_actual); //Procedimiento que despliega la l
 //JUEGO
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); 
 void comenzarPartida (Sistema &juego_actual);
-void registrarPArtida(Sistema &juego_actual, Partida nueva_partida); //Procedimiento para registrar una partida en el arreglo partidas
+void registrarPartida(Sistema &juego_actual, Partida nueva_partida); //Procedimiento para registrar una partida en el arreglo partidas
 
 // Sección de Informes
 void menuInformes(); //Procedimiento que despliega el menú de Informes
 void informes(Sistema &juego_actual); //Procedimiento que permite operar dentro de la sección Informes
-void historialDePartidas(Sistema juego_actual); //Procedimiento que despliega el historial de todas las partidas jugadas
+void mostrarHistorialPartidas(Sistema juego_actual); //Procedimiento que despliega el historial de todas las partidas jugadas
 void partidasPorJugador(Sistema juego_actual); //Procedimiento que despliega una lista de todas las partidas jugadas por cada jugador
 void rankingGeneral(Sistema juego_actual); //Procedimiento que despliega una lista de todos los jugadores de mayor a menor utilizando los puntajes acumulados
 void mejorJugadorPorNivel(Sistema juego_actual); //Procedimiento que despliega una lista de los mejores jugadores según cada nivel
@@ -455,7 +455,7 @@ void editarJugador(Sistema &juego_actual) {
 
     //No se encuentra la posición en el arreglo
     if (posicion == -1) {
-        cout << "¡Error! El alias ingresado no se encuentra registrado." << endl;
+        cout << "El alias ingresado no se encuentra registrado." << endl;
         esperar();
     } else {
         //Validamos el estado del jugador encontrado
@@ -599,27 +599,27 @@ void comenzarPartida(Sistema &juego_actual){
     cout << "Iniciando la partida de SIMON" << endl;
 
     string aliasBuscado; //SOLICITAR ALIAS
-    cout << "Ingresa el Alias con el que deseas jugar" << endl;
+    cout << "Ingresa el alias con el que deseas jugar" << endl;
     getline(cin, aliasBuscado);
 
     int posicion = buscarJugador(juego_actual, aliasBuscado); 
 
     if (posicion == -1){
-        cout << "ERROR \n El alias" << aliasBuscado << " no se encuentra en el sistema. " << endl;
+        cout << "El alias" << aliasBuscado << " no se encuentra en el sistema. " << endl;
         cout << "Debes darte de alta en el menú de Gestión de Jugadores. " << endl;
         esperar();
         return; //corta y vuelve al menú principal
     } 
     if (juego_actual.jugadores[posicion].estado == false){
-        cout << "ERROR \n El juegador" << aliasBuscado << " se encuentra INACTIVO." << endl;
-        cout << "No puedes juegas hasta volver a estar activo." << endl;
-        cout << "En Gestión de juadaores debes darte de alta." << endl;
+        cout << "El jugador" << aliasBuscado << " se encuentra INACTIVO." << endl;
+        cout << "No puedes jugar hasta volver a estar activo." << endl;
+        cout << "En gestión de jugadores debes darte de alta." << endl;
         esperar();
         return; //corta y vuelve al menu principal
     }
 
     //PASÓ LOS FILTOS, ASIQUE ESTÁ ACTIVO Y PUEDE JUGAR
-    cout << "Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].nombre << "!" << endl;
+    cout << "¡Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].nombre << "!" << endl;
 
 }
 
@@ -629,7 +629,7 @@ void comenzarPartida(Sistema &juego_actual){
 
 
 
-// DESARROLLO DE PARTIDAS (Punto 5.2 -1)
+// DESARROLLO DE PARTIDAS
 // Función que llena el arreglo de la secuencia con colores aleatorios
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad){
 
@@ -655,7 +655,7 @@ void generarSecuenciaAleatoria (char secuencia[], int largoDificultad){
 }
 
 
-// REGISTRO DE PARTIDAS (Punto 6)
+// REGISTRO DE PARTIDAS
 void registrarPartida(Sistema &juego_actual, Partida partida_nueva) {
     
     if (juego_actual.cantPartidas < MAX_PARTIDAS) { //Si hay lugar en el arreglo partidas
@@ -666,26 +666,77 @@ void registrarPartida(Sistema &juego_actual, Partida partida_nueva) {
         int posicion = buscarJugador(juego_actual, partida_nueva.aliasJugador); //Buscamos la posición del jugador mediante su alias
 
         juego_actual.jugadores[posicion].puntaje_acumulado += partida_nueva.puntajeObtenido; //Le sumo los puntos correspondientes al jugador en el arreglo jugadores usando su alias
+        cout << "¡Partida registrada con éxito!" << endl; //Mensaje para el jugador :)
 
     } else { //Si no hay lugar en el arreglo
-        cout << "Máximo de partidas guardadas alcanzado :( ...)" << endl;
+        cout << "Máximo de partidas guardadas alcanzado :(" << endl;
         esperar();
     }
 
 }
 
 
-// INFORMES (punto 7)
-//HISTOIAL COMPLETO DE PARTIDAD (Punto 7.1)
 
 
-//PARTIDAS POR JUGAR (Punto 7.2)
+// INFORMES
+//HISTOIAL COMPLETO DE PARTIDAS
+void mostrarHistorialPartidas(Sistema juego_actual) {
+    //Si no hay partidas guardadas en el sistema
+    if (juego_actual.cantPartidas == 0) {
+        cout << "Aún no hay partidas registradas en el sistema." << endl;
+    } else { //Hay una o más partidas guardadas
+        //Hacemos un bucle for para recorrer el arreglo partidas e imprimir los datos de cada elemento dentro el arreglo
+        for (int i = 0; i < juego_actual.cantPartidas; i++) {
+            cout << "Jugador: " << juego_actual.partidas[i].aliasJugador << endl;
+            cout << "Nivel: " << juego_actual.partidas[i].nivel << endl;
+            cout << "Puntaje: " << juego_actual.partidas[i].puntajeObtenido << endl;
+            cout << "Resultado: " << juego_actual.partidas[i].resultado << endl;
+            cout << "=================================================================" << endl;
+        }
+    }
+    esperar();
+}
 
-//RANKING GENERAL (Punto 7.3)
+//PARTIDAS POR JUGADOR
+void mostrarPartidasPorJugador(Sistema juego_actual) {
+    string aliasBuscado;
+    cout << "Ingresa el alias del jugador para ver sus patidas: ";
+    getline(cin, aliasBuscado);
 
-//MEJOR JUGADOR POR NIVEL (Punto 7.4)
+    int posicion = buscarJugador(juego_actual, aliasBuscado);
 
-//ESTADISTICAS GENERALES (Punto 7.5)
+    if (posicion == -1) {
+        cout << "El alias ingresado no se encuentra registrado." << endl;
+    } else { //Se encuentra el alias, por lo que buscamos en el arrego partidas todas las veces que aparezca
+        
+        //Inicializamos una bandera para los casos en que hay un jugador registrado pero no ha jugado
+        bool haJugado = false; //Asumimos que no ha jugado
+
+        for (int i = 0; i < juego_actual.cantPartidas; i++) {
+            if (juego_actual.partidas[i].aliasJugador == aliasBuscado) {
+                cout << "Jugador: " << juego_actual.partidas[i].aliasJugador << endl;
+                cout << "Nivel: " << juego_actual.partidas[i].nivel << endl;
+                cout << "Puntaje: " << juego_actual.partidas[i].puntajeObtenido << endl;
+                cout << "Resultado: " << juego_actual.partidas[i].resultado << endl;
+                cout << "=================================================================" << endl;
+
+                haJugado = true; //Se encontró por lo menos una partida que coincide con el alias
+            }
+        }
+
+        if (haJugado == false) {
+            cout << "El jugador ingresado no tiene partidas registradas." << endl;
+        }
+
+    }
+    esperar();
+}
+
+//RANKING GENERAL
+
+//MEJOR JUGADOR POR NIVEL
+
+//ESTADISTICAS GENERALES
 
 //CHEQUEAR VALIDACIONES punto 8
 
