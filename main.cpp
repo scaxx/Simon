@@ -709,7 +709,7 @@ void mostrarPartidasPorJugador(Sistema juego_actual) {
         cout << "El alias ingresado no se encuentra registrado." << endl;
     } else { //Se encuentra el alias, por lo que buscamos en el arrego partidas todas las veces que aparezca
         
-        //Inicializamos una bandera para los casos en que hay un jugador registrado pero no ha jugado
+        //Inicializamos una variable bandera para los casos en que hay un jugador registrado pero no ha jugado
         bool haJugado = false; //Asumimos que no ha jugado
 
         for (int i = 0; i < juego_actual.cantPartidas; i++) {
@@ -724,15 +724,43 @@ void mostrarPartidasPorJugador(Sistema juego_actual) {
             }
         }
 
+        //Si el jugador está ingresado en el sistema pero no ha jugado
         if (haJugado == false) {
             cout << "El jugador ingresado no tiene partidas registradas." << endl;
         }
-
     }
     esperar();
 }
 
 //RANKING GENERAL
+void rankingGeneral(Sistema juego_actual) {
+
+    cout << "Rankig General (mayor a menor puntaje): " << endl;
+
+    if (juego_actual.cantJugadores == 0) {
+
+        //En caso de que no hayan jugadores en el sistema
+        cout << "Aún no hay jugadores registrados." << endl;
+    
+    } else {
+
+        //Llamamos al procedimiento que ordena los jugadores por puntaje (mayor a menor)
+        ordenarJugadoresPorPuntaje(juego_actual);
+
+        //Hacemos un for para recorrer el arreglo de jugadores que ya están ordenados
+        for (int i = 0; i < juego_actual.cantJugadores; i++) {
+            
+            //Imprimimos los datos
+            cout << i + 1 << " - " << juego_actual.jugadores[i].alias << endl;
+            cout << "Puntaje: " << juego_actual.jugadores[i].puntaje_acumulado << endl;
+            cout << "=================================================================" << endl;
+        }
+        
+    }
+
+    esperar();
+
+}
 
 //MEJOR JUGADOR POR NIVEL
 
@@ -750,6 +778,24 @@ void mostrarPartidasPorJugador(Sistema juego_actual) {
 
 
 // ---------- PROCEDIMIENTOS Y FUNCIONES ----------
+
+//Algoritmo burbuja de ordenamiento para puntajes (mayor a menor)
+void ordenarJugadoresPorPuntaje(Sistema &juego_actual) {
+    //Variable temporal para mover los jugadores dentro del arreglo y no perder ninguno
+    Jugador aux;
+
+    for (int i = 0; i < juego_actual.cantJugadores - 1; i++) {
+        for (int j = i + 1; j < juego_actual.cantJugadores; j++) {
+            //Si el elemento en el índice j tiene mayor puntaje que el elemento en el índice i los intercambiamos
+            if (juego_actual.jugadores[j].puntaje_acumulado > juego_actual.jugadores[i].puntaje_acumulado) {
+                aux = juego_actual.jugadores[i]; //El elemento en el índice i lo guardo en aux para no perderlo
+                juego_actual.jugadores[i] = juego_actual.jugadores[j]; //El elemento en el índice i ahora tiene el contenido del elemento en el índice j
+                juego_actual.jugadores[j] = aux; //El elemento en el índice j ahora tiene el contenido de aux, es decir el contenido inicial de i
+
+            }    
+        }
+    }
+}
 
 //Función que se utliza para chequear que los campos dentro de los formularios no estén vacíos
 bool verificarCampoVacio(string s) {
