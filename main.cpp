@@ -821,8 +821,63 @@ cout << "--- Mejores jugadores por NIVEL ---" << endl;
 
 //ESTADISTICAS GENERALES
 void estadisticasGenerales(Sistema juego_actual){
-    int contActivos = 0;
+int contActivos = 0;
+int partidasGanadas = 0; // Para contar las que tienen resultado COMPLETADO
+// Para contar cuántas veces se jugó cada nivel
+int cantPrin = 0;
+int cantInt = 0;
+int cantAva = 0;
+
+    cout << "=== ESTADÍSTICAS GENERALES ===" << endl;
+    cout << "Cantidad total de jugadores : " << juego_actual.cantJugadores << endl; //Ya tenemos este dato
+
+    for (int i = 0 ; i < juego_actual.cantJugadores ; i++){ //Acá pide los activos asique los salimos a buscar y los contabilizamos 
+        if (juego_actual.jugadores[i].estado == true){
+            contActivos ++;
+        }
+    }
+    cout << "La cantidad de jugadores activos es: " << contActivos << endl;
+    //PORMEDIO DE PUNTAJE
+    int sumaPuntajes = 0;
+    for(int i = 0; i<juego_actual.cantPartidas; i++){
+        sumaPuntajes += juego_actual.partidas[i].puntajeObtenido;
+        if(juego_actual.partidas[i].resultado == COMPLETADO ){  // PORCENTAJE DE PARTIDAS GANADAS (seguimos adentro del for)
+        partidasGanadas++;
+        }
+
+        if (juego_actual.partidas[i].nivel == PRINCIPIANTE){
+            cantPrin++;
+        }else if (juego_actual.partidas[i].nivel == INTERMEDIO){
+            cantInt++;
+        }else if (juego_actual.partidas[i].nivel == AVANZADO){
+            cantAva++;
+        }
+    }
     
+    if (juego_actual.cantPartidas == 0){
+        cout << "Aún no hay partidas jugadas"<< endl;
+    } else {
+        cout << "El promedio de puntajes es: " << (float)sumaPuntajes / juego_actual.cantPartidas << endl; //agrego float por si da con coma
+        cout << "El porcentaje de partidas ganadas es: " << (float)partidasGanadas *100 / juego_actual.cantPartidas << endl;
+    }
+
+    // Asumimos que el más jugado fue principiante
+string nivelMasJugado = "Principiante";
+int maxPartidasNivel = cantPrin;
+
+// ¿Intermedio le gana a nuestro máximo actual?
+if (cantInt > maxPartidasNivel) {
+    nivelMasJugado = "Intermedio";
+    maxPartidasNivel = cantInt;
+}
+
+// ¿Avanzado le gana a nuestro máximo actual?
+if (cantAva > maxPartidasNivel) {
+    nivelMasJugado = "Avanzado";
+    maxPartidasNivel = cantAva;
+}
+
+cout << "El nivel mas jugado fue el " << nivelMasJugado << " con " << maxPartidasNivel << " partidas." << endl; //Variables ganadoras
 }
 
 //CHEQUEAR VALIDACIONES punto 8
