@@ -821,6 +821,7 @@ cout << "--- Mejores jugadores por NIVEL ---" << endl;
 
 //ESTADISTICAS GENERALES
 void estadisticasGenerales(Sistema juego_actual){
+    int contActivos = 0;
     
 }
 
