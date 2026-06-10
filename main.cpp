@@ -767,6 +767,7 @@ void comenzarPartida(Sistema &juego_actual){
         registrarPartida (juego_actual, partida_nueva);  // LLamamos a la función para guardar 
 
     cout << "Gracias por jugar a SIMÓN DICE. Volviendo al menú principal..." << endl;
+    cin.ignore();
     esperar();
 }
 
@@ -1123,7 +1124,7 @@ bool pedirAlias (Sistema &juego_actual, Jugador &j) {
             los datos del jugador para que no pida nuevamente los datos*/
             if (juego_actual.jugadores[posicionAlias].estado == false) {
                 juego_actual.jugadores[posicionAlias].estado = true; //Seteamos el estado a true (activo)
-                cout << "¡Bienvenid@ devuelta" << juego_actual.jugadores[posicionAlias].alias << "!" << endl;
+                cout << "¡Bienvenid@ devuelta " << juego_actual.jugadores[posicionAlias].alias << "!" << endl;
                 esperar();
 
                 j = juego_actual.jugadores[posicionAlias]; //Guardamos los datos para devolverlos al jugador
