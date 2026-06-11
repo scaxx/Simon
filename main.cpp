@@ -105,6 +105,7 @@ void estadisticasGenerales(Sistema juego_actual); //Procedimiento que despliega 
 // Funciones y procedimientos generales
 string mostrarNivel(Nivel nivel); //Función que devuelve al jugador el nivel
 string mostrarResultado(Resultado resultado); //Función que devuelve el resultado
+int puntajeAcumuladoPorJugador(Sistema juego_actual, string aliasBuscado); //Función que devuelve el puntaje acumulado por el jugador en todas las partidas
 int cantPartidasPorJugador(Sistema juego_actual, string aliasBuscado); //Función para determinar la cantidad de partidas de un jugador
 bool verificarCampoVacio(string entrada); //Función para verificar que los campos no se encuentren vacíos
 bool sonNumeros(string entrada); //Función para verificar que los datos ingresados son números
@@ -1021,6 +1022,24 @@ string mostrarResultado(Resultado resultado) {
     }
 }
 
+//Función para obtener el puntaje acumulado por jugador
+int puntajeAcumuladoPorJugador(Sistema juego_actual, string aliasBuscado) {
+    int puntajeAcumulado = 0; //Inicializamos un contador para las partidas
+    
+    //Recorremos el arreglo partidas y buscamos el alias
+    for (int i = 0; i < juego_actual.cantPartidas; i++){
+        //Si encontramos un alias que coincide dentro de las partidas
+        if(aliasBuscado == juego_actual.partidas[i].aliasJugador){
+            //Sumamos el puntaje obtenido en esa partida específica al puntaje acumulado
+            puntajeAcumulado += juego_actual.partidas[i].puntajeObtenido;
+        }
+    }
+
+    //Devolvemos la suma de los puntajes de todas las partidas
+    return puntajeAcumulado;
+    
+}
+
 //Función para obtener la cantidad de partidas por jugador
 int cantPartidasPorJugador(Sistema juego_actual, string aliasBuscado) {
     int cantidadPartidas = 0; //Inicializamos un contador para las partidas
@@ -1039,32 +1058,20 @@ int cantPartidasPorJugador(Sistema juego_actual, string aliasBuscado) {
 }
 
 //Algoritmo burbuja de ordenamiento para puntajes (mayor a menor)
-void ordenarJugadoresPorPuntaje(Sistema juego_actual) {
-    int puntajeAcumulado=0;
-    int cantPartidasJugador=0;
+//Usamos el & para modificar la copia de Sistema que recibe Ranking (que es donde se va a usar esta función)
+//Sin tocar el Sistema original
+void ordenarJugadoresPorPuntaje(Sistema &juego_actual) {
 
-    for (int i =0; i < juego_actual.cantJugadores; i++){
-        for (int j= 0; j<juego_actual.cantPartidas;j++){
-            if(juego_actual.jugadores[i].alias == juego_actual.partidas[j].aliasJugador){
-                puntajeAcumulado += juego_actual.partidas[j].puntajeObtenido;
-                cantPartidasJugador++;
-
-            }
-        }
-        cout<< "Alias : " << juego_actual.jugadores[i].alias << endl;
-        cout << "Cantidad de partidas : " << cantPartidasJugador << endl;
-        cout << "Puntaje total: " << puntajeAcumulado << endl;
-    }
     //Variable temporal para mover los jugadores dentro del arreglo y no perder ninguno
-    Partida aux;
+    Jugador aux;
 
     for (int i = 0; i < juego_actual.cantJugadores - 1; i++) {
         for (int j = i + 1; j < juego_actual.cantJugadores; j++) {
             //Si el elemento en el índice j tiene mayor puntaje que el elemento en el índice i los intercambiamos
-            if (juego_actual.partidas[j].puntajeObtenido > juego_actual.partidas[i].puntajeObtenido) {
-                aux = juego_actual.partidas[i]; //El elemento en el índice i lo guardo en aux para no perderlo
-                juego_actual.partidas[i] = juego_actual.partidas[j]; //El elemento en el índice i ahora tiene el contenido del elemento en el índice j
-                juego_actual.partidas[j] = aux; //El elemento en el índice j ahora tiene el contenido de aux, es decir el contenido inicial de i
+            if (puntajeAcumuladoPorJugador(juego_actual, juego_actual.jugadores[j].alias) > puntajeAcumuladoPorJugador(juego_actual, juego_actual.jugadores[i].alias) ) {
+                aux = juego_actual.jugadores[i]; //El elemento en el índice i lo guardo en aux para no perderlo
+                juego_actual.jugadores[i] = juego_actual.jugadores[j]; //El elemento en el índice i ahora tiene el contenido del elemento en el índice j
+                juego_actual.jugadores[j] = aux; //El elemento en el índice j ahora tiene el contenido de aux, es decir el contenido inicial de i
 
             }    
         }
