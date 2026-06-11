@@ -45,7 +45,7 @@ struct Jugador{
     string apellido;
     Fecha fecha_nacimiento;
     bool estado;
-    int puntaje_acumulado; //Revisar
+    int puntaje_acumulado;
 };  
 
 enum Resultado {COMPLETADO, PERDIDO, ABANDONADO};
@@ -106,6 +106,7 @@ void estadisticasGenerales(Sistema juego_actual); //Procedimiento que despliega 
 // Funciones y procedimientos generales
 string mostrarNivel(Nivel nivel); //Función que devuelve al jugador el nivel
 string mostrarResultado(Resultado resultado); //Función que devuelve el resultado
+int cantPartidasPorJugador(Sistema juego_actual, string aliasBuscado); //Función para determinar la cantidad de partidas de un jugador
 bool verificarCampoVacio(string entrada); //Función para verificar que los campos no se encuentren vacíos
 bool sonNumeros(string entrada); //Función para verificar que los datos ingresados son números
 int convertirOpcion(string entrada); //Función para leer un string y devolver un int
@@ -630,9 +631,8 @@ void comenzarPartida(Sistema &juego_actual){
     cout << "¡Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].nombre << "!" << endl;
     esperar(); // El usuario presiona Enter acá para continuar
 
-    // ====================================================================
     // NIVELES (Punto 5.1)
-    // ====================================================================
+
     Nivel nivelElegido; 
 
     int largoDificultad;
@@ -868,7 +868,7 @@ void mostrarPartidasPorJugador(Sistema juego_actual) {
 //RANKING GENERAL
 void rankingGeneral(Sistema juego_actual) {
 
-    cout << "Rankig General (mayor a menor puntaje): " << endl;
+    cout << "Ranking General (mayor a menor puntaje): " << endl;
 
     if (juego_actual.cantJugadores == 0) {
 
@@ -883,9 +883,9 @@ void rankingGeneral(Sistema juego_actual) {
         //Hacemos un for para recorrer el arreglo de jugadores que ya están ordenados
         for (int i = 0; i < juego_actual.cantJugadores; i++) {
             
-            //Imprimimos los datos ALIAS Y PUNTAJE 
+            //Imprimimos los datos ALIAS, CANTIDAD DE PARTIDAS JUGADAS Y PUNTAJE 
             cout << i + 1 << " - " << juego_actual.jugadores[i].alias << endl;
-            //cout << "Partidas jugadas: " << juego_actual.jugadores[i].cant
+            cout << "Cantidad de partidas jugadas: " << cantPartidasPorJugador(juego_actual, juego_actual.jugadores[i].alias) << endl;
             cout << "Puntaje: " << juego_actual.jugadores[i].puntaje_acumulado << endl;
             cout << "=================================================================" << endl;
         }
@@ -1050,6 +1050,23 @@ string mostrarResultado(Resultado resultado) {
         default:
             return "Desconocido";
     }
+}
+
+//Función para obtener la cantidad de partidas por jugador
+int cantPartidasPorJugador(Sistema juego_actual, string aliasBuscado) {
+    int cantidadPartidas = 0; //Inicializamos un contador para las partidas
+    
+    //Recorremos el arreglo partidas y buscamos el alias especificado por el usuario
+    for (int i = 0; i < juego_actual.cantPartidas; i++) {
+        if (juego_actual.partidas[i].aliasJugador == aliasBuscado) {
+            //Si encontramos el alias hacemos cantidadPartidas++
+            cantidadPartidas++;
+        }
+    }
+    
+    //Devolvemos la cantidad de partidas
+    return cantidadPartidas;
+    
 }
 
 //Algoritmo burbuja de ordenamiento para puntajes (mayor a menor)
