@@ -1,7 +1,12 @@
 #include <iostream> 
+#include <chrono>
+#include <thread>
 #include <unistd.h>
 #include <cstdlib> // Contiene rand y srand
 #include <ctime>   // Contiene time()
+
+
+
 
 // --- CONSTANTES DEL SISTEMA ---
 
@@ -29,6 +34,7 @@
 #define ANIO_ACTUAL 2026
 
 using namespace std;
+
 
 /* JUEGO SIMÓN */
 
@@ -121,7 +127,6 @@ void pedirAnio(Fecha &f); //Procedimiento para pedir el año
 void pedirMes(Fecha &f); //Procedimiento para pedir el mes
 void pedirDia(Fecha &f); //Procedimiento para pedir el día
 void ordenarJugadoresPorPuntaje(Sistema &juego_actual);
-
 
 // ************************************************************************
 
@@ -592,7 +597,7 @@ void comenzarPartida(Sistema &juego_actual){
         return; //corta y vuelve al menu principal
     }
 
-    cout << "¡Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].nombre << "!" << endl;
+    cout << "¡Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].alias << "!" << endl;
     esperar(); // El usuario presiona Enter acá para continuar
 
     // NIVELES (Punto 5.1)
@@ -634,7 +639,7 @@ void comenzarPartida(Sistema &juego_actual){
                 nivelElegido = AVANZADO;
                 largoDificultad = LARGO_AVANZADO; //10
                 puntosPorRonda = PTS_AVANZADO;  //5
-                tiempoMuestra = TIEMPO_AVANZADO;  // 1
+                tiempoMuestra = TIEMPO_AVANZADO; // 1
                 nivelValido = true;
                 break;
             default: 
@@ -689,12 +694,14 @@ void comenzarPartida(Sistema &juego_actual){
             if (secuenciaJugador[k] == 'S') {
                 resultadoFinal = ABANDONADO;
                 sigueJugando = false;
+                cout << "Abandonaste la partida" << endl;
+                esperar();
                 break; // Rompe el bucle 'k'
             }
 
             // Control de Error
             if (secuenciaJugador[k] != secuenciaCreadaPartida[k]) {
-                cout << "❌ ¡Te equivocaste de color! Juego terminado." << endl;
+                cout << "¡Te equivocaste de color! Juego terminado." << endl;
                 esperar();
                 resultadoFinal = PERDIDO;
                 sigueJugando = false;
@@ -1121,6 +1128,10 @@ void esperar() {
     cout << endl << "Presiona Enter para continuar...";
     getline(cin, continuar);
     system("clear");
+    sleep_for(milliseconds(1500));
+    system("clear");
+    return 0;
+
 }
 
 //Función para pedir el alias del jugador
