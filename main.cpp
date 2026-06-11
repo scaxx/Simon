@@ -609,7 +609,7 @@ void comenzarPartida(Sistema &juego_actual){
     cout << "Iniciando la partida de SIMON" << endl;
 
     string aliasBuscado; //SOLICITAR ALIAS
-    cout << "Ingresa el alias con el que deseas jugar; " << endl;
+    cout << "Ingresa el alias con el que deseas jugar: " << endl;
     getline(cin, aliasBuscado);
 
     int posicion = buscarJugador(juego_actual, aliasBuscado); 
@@ -621,7 +621,7 @@ void comenzarPartida(Sistema &juego_actual){
         return; //corta y vuelve al menú principal
     } 
     if (juego_actual.jugadores[posicion].estado == false){
-        cout << "El jugador" << aliasBuscado << " se encuentra INACTIVO." << endl;
+        cout << "El jugador " << aliasBuscado << " se encuentra INACTIVO." << endl;
         cout << "No puedes jugar hasta volver a estar activo." << endl;
         cout << "En gestión de jugadores debes darte de alta." << endl;
         esperar();
@@ -764,7 +764,6 @@ void comenzarPartida(Sistema &juego_actual){
     cout << "Gracias por jugar a SIMÓN DICE. Volviendo al menú principal..." << endl;
     esperar();
 }
-
 
 // Función que llena el arreglo de la secuencia con colores aleatorios
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad){
@@ -951,23 +950,26 @@ cout << "--- Mejores jugadores por NIVEL ---" << endl;
 
 //ESTADISTICAS GENERALES
 void estadisticasGenerales(Sistema juego_actual){
-int contActivos = 0;
-int partidasGanadas = 0; // Para contar las que tienen resultado COMPLETADO
-// Para contar cuántas veces se jugó cada nivel
-int cantPrin = 0;
-int cantInt = 0;
-int cantAva = 0;
+    int contActivos = 0;
+    int partidasGanadas = 0; // Para contar las que tienen resultado COMPLETADO
+    // Para contar cuántas veces se jugó cada nivel
+    int cantPrin = 0;
+    int cantInt = 0;
+    int cantAva = 0;
 
     cout << "=== ESTADÍSTICAS GENERALES ===" << endl;
-    cout << "Cantidad total de jugadores : " << juego_actual.cantJugadores << endl; //Ya tenemos este dato
+    cout << "Cantidad total de jugadores: " << juego_actual.cantJugadores << endl; //Ya tenemos este dato
 
     for (int i = 0 ; i < juego_actual.cantJugadores ; i++){ //Acá pide los activos asique los salimos a buscar y los contabilizamos 
         if (juego_actual.jugadores[i].estado == true){
             contActivos ++;
         }
     }
-    cout << "La cantidad de jugadores activos es: " << contActivos << endl;
-    //PORMEDIO DE PUNTAJE
+
+    cout << "Cantidad total de partidas jugadas: " << juego_actual.cantPartidas << endl; //Cantidad de partidas jugadas en el sistema
+
+    cout << "Cantidad de jugadores activos: " << contActivos << endl;
+    //PROMEDIO DE PUNTAJE
     int sumaPuntajes = 0;
     for(int i = 0; i<juego_actual.cantPartidas; i++){
         sumaPuntajes += juego_actual.partidas[i].puntajeObtenido;
@@ -985,42 +987,46 @@ int cantAva = 0;
     }
     
     if (juego_actual.cantPartidas == 0){
-        cout << "Aún no hay partidas jugadas"<< endl;
+        cout << "Aún no se han jugado partidas" << endl;
     } else {
         cout << "El promedio de puntajes es: " << (float)sumaPuntajes / juego_actual.cantPartidas << endl; //agrego float por si da con coma
-        cout << "El porcentaje de partidas ganadas es: " << (float)partidasGanadas *100 / juego_actual.cantPartidas << endl;
+        cout << "El porcentaje de partidas ganadas es: " << (float)partidasGanadas * 100 / juego_actual.cantPartidas << endl;
     }
 
-    // Asumimos que el más jugado fue principiante
-string nivelMasJugado = "Principiante";
-int maxPartidasNivel = cantPrin;
+    //Habría que revisar esta parte porque creo que se puede dividir en otra función
+    // Declaramos las variables para operar
+    string nivelMasJugado = "";
+    int maxPartidasNivel = 0;
 
-// ¿Intermedio le gana a nuestro máximo actual?
-if (cantInt > maxPartidasNivel) {
-    nivelMasJugado = "Intermedio";
-    maxPartidasNivel = cantInt;
-}
+    // ¿Principiante le gana a nuestro máximo actual?
+    if (cantPrin > maxPartidasNivel) {
+        nivelMasJugado = "Principiante";
+        maxPartidasNivel = cantPrin;
+    }
 
-// ¿Avanzado le gana a nuestro máximo actual?
-if (cantAva > maxPartidasNivel) {
-    nivelMasJugado = "Avanzado";
-    maxPartidasNivel = cantAva;
-}
+    // ¿Intermedio le gana a nuestro máximo actual?
+    if (cantInt > maxPartidasNivel) {
+        nivelMasJugado = "Intermedio";
+        maxPartidasNivel = cantInt;
+    }
 
-cout << "El nivel mas jugado fue el " << nivelMasJugado << " con " << maxPartidasNivel << " partidas." << endl; //Variables ganadoras
-esperar();
+    // ¿Avanzado le gana a nuestro máximo actual?
+    if (cantAva > maxPartidasNivel) {
+        nivelMasJugado = "Avanzado";
+        maxPartidasNivel = cantAva;
+    }
+
+    //Si el juego no tiene partidas aún
+    if (juego_actual.cantPartidas == 0) {
+        esperar();
+        return;
+    } else { //Si tenemos un nivel máximo
+        cout << "El nivel mas jugado fue el " << nivelMasJugado << " con " << maxPartidasNivel << " partidas." << endl;
+    }
+    esperar();
 }
 
 //CHEQUEAR VALIDACIONES punto 8
-
-
-
-
-
-
-
-
-
 
 // ---------- PROCEDIMIENTOS Y FUNCIONES ----------
 
