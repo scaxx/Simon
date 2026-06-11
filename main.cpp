@@ -45,7 +45,6 @@ struct Jugador{
     string apellido;
     Fecha fecha_nacimiento;
     bool estado;
-    int puntaje_acumulado;
 };  
 
 enum Resultado {COMPLETADO, PERDIDO, ABANDONADO};
@@ -95,7 +94,7 @@ void registrarPartida(Sistema &juego_actual, Partida nueva_partida); //Procedimi
 // Sección de Informes
 void menuInformes(); //Procedimiento que despliega el menú de Informes
 void informes(Sistema &juego_actual); //Procedimiento que permite operar dentro de la sección Informes
-void mostrarHistorialPartidas(Sistema juego_actual); //Procedimiento que despliega el historial de todas las partidas jugadas
+void mostrarHistorialPartidas(Sistema juego_actual); //Procedimiento que despliega el historial de todas las partidas jugadas en orden cronológico
 void mostrarPartidasPorJugador(Sistema juego_actual); //Procedimiento que despliega una lista de todas las partidas jugadas por cada jugador
 void rankingGeneral(Sistema juego_actual); //Procedimiento que despliega una lista de todos los jugadores de mayor a menor utilizando los puntajes acumulados
 void mejorJugadorPorNivel(Sistema juego_actual); //Procedimiento que despliega una lista de los mejores jugadores según cada nivel
@@ -345,8 +344,6 @@ Jugador crear_jugador(Sistema &juego_actual){
         getline(cin, j.apellido);
     } while (verificarCampoVacio(j.apellido)); //Se repite mientras j.apellido esté vacío
 
-    //Inicializamos el puntaje del jugador en 0
-    j.puntaje_acumulado = 0;
 
     pedirAnio(j.fecha_nacimiento);
     pedirMes(j.fecha_nacimiento);
@@ -415,40 +412,6 @@ void bajaJugador(Sistema &juego_actual) {
     }
 }
 
-/* Lo dejamos comentado para revisar después
-//ELIMINAR JUGADOR
-void eliminarJugador(Juego &juego_actual) {
-    string aliasBuscado;
-    system("clear");
-    cout << "Ingresa el alias del jugador que deseas eliminar: " << endl;
-    getline(cin, aliasBuscado);
-
-    //Usamos la función para buscar el jugador mediante el alias
-    int posicion = buscarJugador(juego_actual, aliasBuscado);
-
-    //Si el alias no se encuentra en el arreglo jugadores
-    if (posicion == -1) {
-        cout << "No se encontró ningún jugador con el alias " << aliasBuscado << endl;
-        esperar();
-    } else { //Si el alias se encuentra en el arreglo jugadores
-        //Ingresamos al arreglo para empezar a comparar
-        for (int i = 0; i < juego_actual.cantJugadores; i++){
-            //Cuando encontramos el alias
-            if (juego_actual.jugadores[i].alias == aliasBuscado) {
-                //Empezamos la lógica para correr los elementos del arreglo (los jugadores) hacia la izquierda
-                for ( int j = i ; j < juego_actual.cantJugadores - 1; j++){
-                    juego_actual.jugadores[j] = juego_actual.jugadores[j + 1];
-                    
-                }
-                //Bajamos 1 en el tope del arreglo de jugadores
-                juego_actual.cantJugadores--;
-                cout << "¡Jugador eliminado con éxito!" << endl; //Avisamos al jugador que el jugador seleccionado ha sido eliminado
-                return; //Terminamos al función para que no siga buscando jugadores
-            }
-        }        
-    }
-    
-} */
 
 //EDITAR JUGADOR
 void editarJugador(Sistema &juego_actual) {
@@ -799,8 +762,7 @@ void registrarPartida(Sistema &juego_actual, Partida partida_nueva) {
         juego_actual.cantPartidas++; //Aumentamos el contador de partidas
         
         int posicion = buscarJugador(juego_actual, partida_nueva.aliasJugador); //Buscamos la posición del jugador mediante su alias
-
-        juego_actual.jugadores[posicion].puntaje_acumulado += partida_nueva.puntajeObtenido; //Le sumo los puntos correspondientes al jugador en el arreglo jugadores usando su alias
+        juego_actual.partidas[posicion].puntajeObtenido += partida_nueva.puntajeObtenido; //Le sumo los puntos de la partida diferenciando al jugador mediante su alias
         cout << "¡Partida registrada con éxito!" << endl; //Mensaje para el jugador :)
 
     } else { //Si no hay lugar en el arreglo
@@ -868,6 +830,7 @@ void mostrarPartidasPorJugador(Sistema juego_actual) {
 void rankingGeneral(Sistema juego_actual) {
 
     cout << "Ranking General (mayor a menor puntaje): " << endl;
+   
 
     if (juego_actual.cantJugadores == 0) {
 
@@ -883,9 +846,9 @@ void rankingGeneral(Sistema juego_actual) {
         for (int i = 0; i < juego_actual.cantJugadores; i++) {
             
             //Imprimimos los datos ALIAS, CANTIDAD DE PARTIDAS JUGADAS Y PUNTAJE 
-            cout << i + 1 << " - " << juego_actual.jugadores[i].alias << endl;
+            cout << i + 1 << " - " << juego_actual.partidas[i].aliasJugador << endl;
             cout << "Cantidad de partidas jugadas: " << cantPartidasPorJugador(juego_actual, juego_actual.jugadores[i].alias) << endl;
-            cout << "Puntaje: " << juego_actual.jugadores[i].puntaje_acumulado << endl;
+            cout << "Puntaje: " << juego_actual.partidas[i].puntajeObtenido << endl;
             cout << "=================================================================" << endl;
         }
         
@@ -1076,17 +1039,32 @@ int cantPartidasPorJugador(Sistema juego_actual, string aliasBuscado) {
 }
 
 //Algoritmo burbuja de ordenamiento para puntajes (mayor a menor)
-void ordenarJugadoresPorPuntaje(Sistema &juego_actual) {
+void ordenarJugadoresPorPuntaje(Sistema juego_actual) {
+    int puntajeAcumulado=0;
+    int cantPartidasJugador=0;
+
+    for (int i =0; i < juego_actual.cantJugadores; i++){
+        for (int j= 0; j<juego_actual.cantPartidas;j++){
+            if(juego_actual.jugadores[i].alias == juego_actual.partidas[j].aliasJugador){
+                puntajeAcumulado += juego_actual.partidas[j].puntajeObtenido;
+                cantPartidasJugador++;
+
+            }
+        }
+        cout<< "Alias : " << juego_actual.jugadores[i].alias << endl;
+        cout << "Cantidad de partidas : " << cantPartidasJugador << endl;
+        cout << "Puntaje total: " << puntajeAcumulado << endl;
+    }
     //Variable temporal para mover los jugadores dentro del arreglo y no perder ninguno
-    Jugador aux;
+    Partida aux;
 
     for (int i = 0; i < juego_actual.cantJugadores - 1; i++) {
         for (int j = i + 1; j < juego_actual.cantJugadores; j++) {
             //Si el elemento en el índice j tiene mayor puntaje que el elemento en el índice i los intercambiamos
-            if (juego_actual.jugadores[j].puntaje_acumulado > juego_actual.jugadores[i].puntaje_acumulado) {
-                aux = juego_actual.jugadores[i]; //El elemento en el índice i lo guardo en aux para no perderlo
-                juego_actual.jugadores[i] = juego_actual.jugadores[j]; //El elemento en el índice i ahora tiene el contenido del elemento en el índice j
-                juego_actual.jugadores[j] = aux; //El elemento en el índice j ahora tiene el contenido de aux, es decir el contenido inicial de i
+            if (juego_actual.partidas[j].puntajeObtenido > juego_actual.partidas[i].puntajeObtenido) {
+                aux = juego_actual.partidas[i]; //El elemento en el índice i lo guardo en aux para no perderlo
+                juego_actual.partidas[i] = juego_actual.partidas[j]; //El elemento en el índice i ahora tiene el contenido del elemento en el índice j
+                juego_actual.partidas[j] = aux; //El elemento en el índice j ahora tiene el contenido de aux, es decir el contenido inicial de i
 
             }    
         }
