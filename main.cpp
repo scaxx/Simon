@@ -107,7 +107,7 @@ string mostrarNivel(Nivel nivel); //Función que devuelve al jugador el nivel
 string mostrarResultado(Resultado resultado); //Función que devuelve el resultado
 int puntajeAcumuladoPorJugador(Sistema juego_actual, string aliasBuscado); //Función que devuelve el puntaje acumulado por el jugador en todas las partidas
 int cantPartidasPorJugador(Sistema juego_actual, string aliasBuscado); //Función para determinar la cantidad de partidas de un jugador
-bool verificarCampoVacio(string entrada); //Función para verificar que los campos no se encuentren vacíos
+bool verificarCampoInvalido(string entrada); //Función para verificar que los campos no se encuentren vacíos
 bool sonNumeros(string entrada); //Función para verificar que los datos ingresados son números
 int convertirOpcion(string entrada); //Función para leer un string y devolver un int
 void esperar(); //Procedimiento para casos de error
@@ -337,13 +337,13 @@ Jugador crear_jugador(Sistema &juego_actual){
         system("clear");
         cout << "Ingresa tu nombre: "; //En este caso no verificamos que se ingresen sólo letras porque puede ser un nombre con diferentes símbolos (Ej: El hijo de Elon Musk)
         getline(cin, j.nombre);
-    } while (verificarCampoVacio(j.nombre)); //Se repite mientras j.nombre esté vacío
+    } while (verificarCampoInvalido(j.nombre)); //Se repite mientras j.nombre esté vacío
 
     do {
         system("clear");
         cout << "Ingresa tu apellido: "; //Aplicamos la misma lógica que en el campo anterior
         getline(cin, j.apellido);
-    } while (verificarCampoVacio(j.apellido)); //Se repite mientras j.apellido esté vacío
+    } while (verificarCampoInvalido(j.apellido)); //Se repite mientras j.apellido esté vacío
 
 
     pedirAnio(j.fecha_nacimiento);
@@ -444,7 +444,7 @@ void editarJugador(Sistema &juego_actual) {
                 cout << "EDITAR JUGADOR: " << endl;
                 cout << "Ingresa el nuevo nombre: ";
                 getline(cin, nombreTemp); //Guardamos el nombre editado en una variable temporal
-            } while(verificarCampoVacio(nombreTemp)); //Si true nombreTemp está vacío y se vuelve a pedir el nombre
+            } while(verificarCampoInvalido(nombreTemp)); //Si true nombreTemp está vacío y se vuelve a pedir el nombre
             juego_actual.jugadores[posicion].nombre = nombreTemp; //Sale del do-while porque se ingresa un nombre válido y se guarda en el lugar correspondiente
 
             do {
@@ -452,7 +452,7 @@ void editarJugador(Sistema &juego_actual) {
                 cout << "EDITAR JUGADOR: " << endl;
                 cout << "Ingresa el nuevo apellido: ";
                 getline(cin, apellidoTemp); //Guardamos el apellido editado en una variable temporal
-            } while(verificarCampoVacio(apellidoTemp)); //Si true apellidoTemp está vacío y se vuelve a pedir el apellido
+            } while(verificarCampoInvalido(apellidoTemp)); //Si true apellidoTemp está vacío y se vuelve a pedir el apellido
             juego_actual.jugadores[posicion].apellido = apellidoTemp; //Sale del do-while porque se ingresa un apellido válido y se guarda en el lugar correspondiente
 
             //Editamos la fecha usando las funciones definidas para eso
@@ -847,9 +847,9 @@ void rankingGeneral(Sistema juego_actual) {
         for (int i = 0; i < juego_actual.cantJugadores; i++) {
             
             //Imprimimos los datos ALIAS, CANTIDAD DE PARTIDAS JUGADAS Y PUNTAJE 
-            cout << i + 1 << " - " << juego_actual.partidas[i].aliasJugador << endl;
+            cout << i + 1 << " - " << juego_actual.jugadores[i].alias << endl;
             cout << "Cantidad de partidas jugadas: " << cantPartidasPorJugador(juego_actual, juego_actual.jugadores[i].alias) << endl;
-            cout << "Puntaje: " << juego_actual.partidas[i].puntajeObtenido << endl;
+            cout << "Puntaje: " << puntajeAcumuladoPorJugador(juego_actual, juego_actual.jugadores[i].alias)<< endl;
             cout << "=================================================================" << endl;
         }
         
@@ -1078,15 +1078,16 @@ void ordenarJugadoresPorPuntaje(Sistema &juego_actual) {
     }
 }
 
-//Función que se utliza para chequear que los campos dentro de los formularios no estén vacíos
-bool verificarCampoVacio(string s) {
+//Función que se utliza para chequear que los campos dentro de los formularios sean válidos
+//REVISAR
+bool verificarCampoInvalido(string s) {
 
-    if (s.length() == 0) {
+    if (s.length() == 0 || s == " " || s == "\n") {
         
         cout << "Este campo no puede permanecer vacío." << endl;
         cout << "Por favor, ingresa una entrada válida." << endl;
         esperar();
-        return true; //El campo está vacío
+        return true; //El campo es inválido
 
     }
 
@@ -1133,7 +1134,7 @@ bool pedirAlias (Sistema &juego_actual, Jugador &j) {
         system("clear");
         cout << "Ingresa tu alias: ";
         getline(cin, j.alias);
-        verificarCampoVacio(j.alias);
+        verificarCampoInvalido(j.alias);
 
         int posicionAlias = buscarJugador(juego_actual, j.alias);
 
@@ -1174,7 +1175,7 @@ void pedirAnio(Fecha &f) {
         cout << "Año (mayor o igual a 2000): ";
         getline(cin, anioTexto);
 
-        if(!verificarCampoVacio(anioTexto)) { //El campo no está vacío
+        if(!verificarCampoInvalido(anioTexto)) { //El campo no está vacío
             if(sonNumeros(anioTexto)) {
                 int anioTemp = stoi(anioTexto);//Convertimos anioTexto en número y lo guardamos en anioTemp
                 if(verificarAnio(anioTemp)) { //Usamos la función que creamos para verificar si es un año ok
@@ -1203,7 +1204,7 @@ void pedirMes(Fecha &f){
         cout << "Mes (entre 1 y 12): ";
         getline(cin, mesTexto);
 
-        if(!verificarCampoVacio(mesTexto)) { //Verificamos que no está vacío
+        if(!verificarCampoInvalido(mesTexto)) { //Verificamos que no está vacío
             if(sonNumeros(mesTexto)) { //Verificamos que el jugador ingresa sólo números
                 int mesTemp = stoi(mesTexto); //Si ingresa números, los pasamos a int y guardamos en mesTemp
                 if(verificarMes(mesTemp)) { //Usamos la función que definimos para verificar que el mes está ok
@@ -1231,7 +1232,7 @@ void pedirDia(Fecha &f){
         cout << "Día (del 1 al " << maxDias(f.mes) << "); "<< endl;
         getline(cin, diaTexto);
 
-        if(!verificarCampoVacio(diaTexto)) { //Verificamos que el campo no esté vacío
+        if(!verificarCampoInvalido(diaTexto)) { //Verificamos que el campo no esté vacío
             if(sonNumeros(diaTexto)) { //Verificamos que el jugador ingresa números
                 int diaTemp = stoi(diaTexto); //Convertimos el contenido de diaTexto en número con stoi y guardamos en diaTemp
                 if(verificarDia(diaTemp, f.mes)) { //Verificamos que el día sea válido para el mes ingresado anteriormente
