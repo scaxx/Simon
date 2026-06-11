@@ -25,6 +25,9 @@
 #define TIEMPO_INTERMEDIO 1.3
 #define TIEMPO_AVANZADO 1
 
+// Constante para cambiar dinámicamente el año (fecha de nacimiento)
+#define ANIO_ACTUAL 2026
+
 using namespace std;
 
 /* JUEGO SIMÓN */
@@ -543,7 +546,7 @@ void consultarJugador(Sistema juego_actual) {
     int posicion = buscarJugador(juego_actual, aliasBuscado); // Buscamos la posición del jugador en el arreglo
 
     if (posicion == -1) { //No se encuentra el alias
-        cout << endl << "El alias '" << aliasBuscado << "' no existe en el sistema." << endl;
+        cout << endl << "El alias " << aliasBuscado << " no existe en el sistema." << endl;
     } else {
         cout << endl << "--- DATOS ENCONTRADOS ---" << endl; 
         imprimirJugador(juego_actual.jugadores[posicion]);// Utilizamos la función de imprimirJugador 
@@ -605,13 +608,13 @@ void comenzarPartida(Sistema &juego_actual){
     cout << "Iniciando la partida de SIMON" << endl;
 
     string aliasBuscado; //SOLICITAR ALIAS
-    cout << "Ingresa el alias con el que deseas jugar" << endl;
+    cout << "Ingresa el alias con el que deseas jugar; " << endl;
     getline(cin, aliasBuscado);
 
     int posicion = buscarJugador(juego_actual, aliasBuscado); 
 
     if (posicion == -1){
-        cout << "El alias" << aliasBuscado << " no se encuentra en el sistema. " << endl;
+        cout << "El alias " << aliasBuscado << " no se encuentra en el sistema. " << endl;
         cout << "Debes darte de alta en el menú de Gestión de Jugadores. " << endl;
         esperar();
         return; //corta y vuelve al menú principal
@@ -624,7 +627,7 @@ void comenzarPartida(Sistema &juego_actual){
         return; //corta y vuelve al menu principal
     }
 
-   cout << "¡Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].nombre << "!" << endl;
+    cout << "¡Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].nombre << "!" << endl;
     esperar(); // El usuario presiona Enter acá para continuar
 
     // ====================================================================
@@ -637,10 +640,6 @@ void comenzarPartida(Sistema &juego_actual){
     double tiempoMuestra;
     int opcionNivel;
     bool nivelValido = false;
-
-    
-    // Sacamos cualquier Enter que haya dejado el 'esperar()' anterior
-    cin.ignore(); 
 
     do {
         system("clear"); 
@@ -677,8 +676,6 @@ void comenzarPartida(Sistema &juego_actual){
             default: 
                 cout << "¡Opción inválida! Por favor, selecciona 1, 2 o 3." << endl;
                 esperar(); 
-                // SI FALLA, TAMBIÉN LIMPIAMOS ACÁ ANTES DE REPETIR EL BUCLE
-                cin.ignore(); 
                 break; 
         } 
     } while (nivelValido == false);
@@ -691,7 +688,6 @@ void comenzarPartida(Sistema &juego_actual){
     
     esperar();
 
-
     //Variables y arreglos del JUEGO
     char secuenciaCreadaPartida[MAX_SECUENCIA];
     char secuenciaJugador[MAX_SECUENCIA]; //Guarda la respuesta que el jugador pone en cada ronda
@@ -699,25 +695,25 @@ void comenzarPartida(Sistema &juego_actual){
     Resultado resultadoFinal = PERDIDO;//Variable de tipo Resultado para saber cómo terminó (arranca en PERDIDO por defecto)
     bool sigueJugando = true;// 4. Bandera booleana para controlar si el juego debe continuar o detenerse
 
-// Llenamos el arreglo secuenciaCreadaPartida con los colores aleatorios con la funcion
+    // Llenamos el arreglo secuenciaCreadaPartida con los colores aleatorios con la funcion
     generarSecuenciaAleatoria(secuenciaCreadaPartida, largoDificultad);
 
     for( int ronda = 1; ronda <= largoDificultad && sigueJugando == true; ronda++){
         system("clear");
         cout << "=== RONDA " << ronda << " de " << largoDificultad << " ===" << endl;
         cout << "Simón dice: ";
-// mostramos los colores al usuario
+        // Mostramos los colores al usuario
         for (int j = 0; j< ronda; j++){
             cout<< secuenciaCreadaPartida[j] << " " ; 
         }
         cout << endl;
          
-        // hacemos una pausa y borramos pantalla 
-        cout << "\n[Presioná Enter cuando estés list@ para responder]";
+        // Hacemos una pausa y borramos pantalla 
+        cout << "[Presioná Enter cuando estés list@ para responder]";
         esperar(); 
         system("clear"); 
 
-        // bucle que lee lo que el usuario ingresa
+        // Bucle que lee lo que el usuario ingresa
         cout << "=== TU TURNO ===" << endl;
         cout << "Ingresá los colores de uno en uno (R, V, A, N) o 'S' para abandonar." << endl;
         for (int k = 0; k < ronda; k++) {
@@ -734,7 +730,7 @@ void comenzarPartida(Sistema &juego_actual){
 
             // Control de Error
             if (secuenciaJugador[k] != secuenciaCreadaPartida[k]) {
-                cout << "\n❌ ¡Te equivocaste de color! Juego terminado." << endl;
+                cout << "❌ ¡Te equivocaste de color! Juego terminado." << endl;
                 esperar();
                 resultadoFinal = PERDIDO;
                 sigueJugando = false;
@@ -744,13 +740,13 @@ void comenzarPartida(Sistema &juego_actual){
 
         if (sigueJugando == true) {
             puntajePartida += puntosPorRonda; // Acumulamos los puntos
-            cout << "\n¡Ronda ganada! Sumaste puntos." << endl;
+            cout << "¡Ronda ganada! Sumaste puntos." << endl;
             esperar(); // Una pausa para que el jugador vea el mensaje
 
             // Si la ronda actual es la última de la dificultad, ¡Ganó el juego!
             if (ronda == largoDificultad) {
                 resultadoFinal = COMPLETADO;
-                cout << "\n¡FELICITACIONES! Completaste todas las rondas con éxito." << endl;
+                cout << "¡FELICITACIONES! Completaste todas las rondas con éxito." << endl;
                 esperar();
             }
         }
@@ -766,7 +762,6 @@ void comenzarPartida(Sistema &juego_actual){
         registrarPartida (juego_actual, partida_nueva);  // LLamamos a la función para guardar 
 
     cout << "Gracias por jugar a SIMÓN DICE. Volviendo al menú principal..." << endl;
-    cin.ignore();
     esperar();
 }
 
@@ -815,9 +810,6 @@ void registrarPartida(Sistema &juego_actual, Partida partida_nueva) {
     }
 
 }
-
-
-
 
 // INFORMES
 //HISTOIAL COMPLETO DE PARTIDAS
@@ -893,6 +885,7 @@ void rankingGeneral(Sistema juego_actual) {
             
             //Imprimimos los datos ALIAS Y PUNTAJE 
             cout << i + 1 << " - " << juego_actual.jugadores[i].alias << endl;
+            //cout << "Partidas jugadas: " << juego_actual.jugadores[i].cant
             cout << "Puntaje: " << juego_actual.jugadores[i].puntaje_acumulado << endl;
             cout << "=================================================================" << endl;
         }
@@ -1035,17 +1028,13 @@ esperar();
 string mostrarNivel(Nivel nivel) {
     switch (nivel) {
         case PRINCIPIANTE:
-            cout << "Principiante" << endl;
-            break;
+            return "Principiante";
         case INTERMEDIO:
-            cout << "Intermedio" << endl;
-            break;
+            return "Intermedio";
         case AVANZADO:
-            cout << "Avanzado" << endl;
-            break;
+            return "Avanzado";
         default:
-            cout << "Desconocido" << endl;
-            break;
+            return "Desconocido";
     }
 }
 
@@ -1053,17 +1042,13 @@ string mostrarNivel(Nivel nivel) {
 string mostrarResultado(Resultado resultado) {
     switch (resultado) {
         case COMPLETADO:
-            cout << "Completado" << endl;
-            break;
+            return "Completado";
         case PERDIDO:
-            cout << "Perdido" << endl;
-            break;
+            return "Perdido";
         case ABANDONADO:
-            cout << "Abandonado" << endl;
-            break;
+            return "Abandonado";
         default:
-            cout << "Desconocido" << endl;
-            break;
+            return "Desconocido";
     }
 }
 
@@ -1265,10 +1250,10 @@ int leerEntrada() {
 
 //Función para verificar el año ingresado por el jugador
 bool verificarAnio(int anio) {
-    if (anio >= 2000 && anio < 2026) { //Habría que verificar bien esta restricción
-        return true;
-    } else {
-        return false;
+    if (anio >= 2000 && anio <= ANIO_ACTUAL) { //Usamos esta constante para que sea más fácil editar el año.
+        return true;                           //La letra no lo aclara pero no debería ser posible registrar jugadores nacidos desde el
+    } else {                                   //2023 aprox en adelante (por edad) ni personas nacidas posterior al año actual
+        return false;                          //Por eso pusimos el tope de edad aunque se puede quitar fácilmente
     }
 }
 
