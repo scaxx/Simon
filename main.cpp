@@ -85,15 +85,15 @@ void listaDeJugadores(Sistema &juego_actual); //Procedimiento que despliega la l
 //void eliminarJugador(Sistema &juego_actual); //Procedimiento para eliminar jugador
 
 //JUEGO
-void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); 
-void comenzarPartida (Sistema &juego_actual);
+void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); //Procedimiento que genera la secuencia aleatoria del juego
+void comenzarPartida (Sistema &juego_actual); //Procedimiento que comienza la partida
 void registrarPartida(Sistema &juego_actual, Partida nueva_partida); //Procedimiento para registrar una partida en el arreglo partidas
 
 // Sección de Informes
 void menuInformes(); //Procedimiento que despliega el menú de Informes
 void informes(Sistema &juego_actual); //Procedimiento que permite operar dentro de la sección Informes
 void mostrarHistorialPartidas(Sistema juego_actual); //Procedimiento que despliega el historial de todas las partidas jugadas
-void partidasPorJugador(Sistema juego_actual); //Procedimiento que despliega una lista de todas las partidas jugadas por cada jugador
+void mostrarPartidasPorJugador(Sistema juego_actual); //Procedimiento que despliega una lista de todas las partidas jugadas por cada jugador
 void rankingGeneral(Sistema juego_actual); //Procedimiento que despliega una lista de todos los jugadores de mayor a menor utilizando los puntajes acumulados
 void mejorJugadorPorNivel(Sistema juego_actual); //Procedimiento que despliega una lista de los mejores jugadores según cada nivel
 void estadisticasGenerales(Sistema juego_actual); //Procedimiento que despliega las estadísticas generales
@@ -101,6 +101,8 @@ void estadisticasGenerales(Sistema juego_actual); //Procedimiento que despliega 
 //void mostrarTodosLosJugadores(Juego &juego_actual); //Procedimiento que despliega un listado de todos los jugadores del sistema - no sé si ponerlo jeee
 
 // Funciones y procedimientos generales
+string mostrarNivel(Nivel nivel); //Función que devuelve al jugador el nivel
+string mostrarResultado(Resultado resultado); //Función que devuelve el resultado
 bool verificarCampoVacio(string entrada); //Función para verificar que los campos no se encuentren vacíos
 bool sonNumeros(string entrada); //Función para verificar que los datos ingresados son números
 int convertirOpcion(string entrada); //Función para leer un string y devolver un int
@@ -284,30 +286,30 @@ void informes(Sistema &juego_actual) {
 
         switch (opcionInformes) {
         case 1:
-            cout << "Historial de partidas";
+            cout << "---- HISTORIAL DE PARTIDAS ----";
             mostrarHistorialPartidas(juego_actual);
             break;
         case 2:
-            cout << "Partidas por jugador" << endl;
-            partidasPorJugador(juego_actual);
+            cout << "---- PARTIDAS POR JUGADOR ----" << endl;
+            mostrarPartidasPorJugador(juego_actual);
             break;
         case 3:
-            cout << "Ranking general (por puntaje acumulado)" << endl;
+            cout << "---- RANKING GENERAL ----" << endl;
             rankingGeneral(juego_actual);
             break;
         case 4:
-            cout << "Mejor jugador por nivel" << endl;
+            cout << "---- MEJOR JUGADOR POR NIVEL ----" << endl;
             mejorJugadorPorNivel(juego_actual);
             break;
         case 5:
-            cout << "Estadísticas generales" << endl;
+            cout << "---- ESTADÍSTICAS GENERALES ----" << endl;
             estadisticasGenerales(juego_actual);
             break;
         case 6:
             cout << "Volviendo al menú principal..." << endl;
             break;
         default:
-            cout << "¡ERROR! Opción inválida. Vuelve a intentar con un número del 1 al 6." << endl;
+            cout << "¡Error! Opción inválida. Vuelve a intentar con un número del 1 al 6." << endl;
             esperar();
             break;
         }
@@ -378,7 +380,7 @@ void agregar_jugador(Sistema &juego_actual) {
             juego_actual.cantJugadores++; // Sumamos 1 al contador de jugadores
         }
     } else {
-        cout << "¡ERROR! Máximo de jugadores alcanzado." << endl;
+        cout << "¡Error! Máximo de jugadores alcanzado." << endl;
     }
 }
 
@@ -549,8 +551,6 @@ void consultarJugador(Sistema juego_actual) {
     esperar(); // Para que el usuario pueda ver los datos antes de borrar la pantalla
 }
 
-
-
 //LISTA DE JUGADORES
 
 // LISTADO DE LOS JUGADORES ACTIVOS EN ORDEN ALFABÉTICO
@@ -596,7 +596,6 @@ void listaDeJugadores(Sistema &juego_actual) {
 }
 
 // ********************* JUEGO PUNTO 5  **************************************
-
 
 // DESARROLLO DE PARTIDAS
 
@@ -830,9 +829,9 @@ void mostrarHistorialPartidas(Sistema juego_actual) {
         //Hacemos un bucle for para recorrer el arreglo partidas e imprimir los datos de cada elemento dentro el arreglo
         for (int i = 0; i < juego_actual.cantPartidas; i++) {
             cout << "Jugador: " << juego_actual.partidas[i].aliasJugador << endl;
-            cout << "Nivel: " << juego_actual.partidas[i].nivel << endl;
+            cout << "Nivel: " << mostrarNivel(juego_actual.partidas[i].nivel) << endl;
             cout << "Puntaje: " << juego_actual.partidas[i].puntajeObtenido << endl;
-            cout << "Resultado: " << juego_actual.partidas[i].resultado << endl;
+            cout << "Resultado: " << mostrarResultado(juego_actual.partidas[i].resultado) << endl;
             cout << "=================================================================" << endl;
         }
     }
@@ -840,7 +839,7 @@ void mostrarHistorialPartidas(Sistema juego_actual) {
 }
 
 //PARTIDAS POR JUGADOR
-void partidasPorJugador(Sistema juego_actual) {
+void mostrarPartidasPorJugador(Sistema juego_actual) {
     string aliasBuscado;
     cout << "Ingresa el alias del jugador para ver sus patidas: ";
     getline(cin, aliasBuscado);
@@ -857,16 +856,9 @@ void partidasPorJugador(Sistema juego_actual) {
         for (int i = 0; i < juego_actual.cantPartidas; i++) {
             if (juego_actual.partidas[i].aliasJugador == aliasBuscado) {
                 cout << "Jugador: " << juego_actual.partidas[i].aliasJugador << endl;
-                //cout << "Nivel: " << juego_actual.partidas[i].nivel << endl; //  cuando imprimimos el nivel solo dice 0,1 o 2 
-                cout << "Nivel: ";
-                switch(juego_actual.partidas[i].nivel) {
-                    case PRINCIPIANTE: cout << "Principiante"; break;
-                    case INTERMEDIO:   cout << "Intermedio"; break;
-                    case AVANZADO:     cout << "Avanzado"; break;
-                }
-                cout << endl;
+                cout << "Nivel: " << mostrarNivel(juego_actual.partidas[i].nivel) << endl;
                 cout << "Puntaje: " << juego_actual.partidas[i].puntajeObtenido << endl;
-                cout << "Resultado: " << juego_actual.partidas[i].resultado << endl;
+                cout << "Resultado: " << mostrarResultado(juego_actual.partidas[i].resultado) << endl;
                 cout << "=================================================================" << endl;
 
                 haJugado = true; //Se encontró por lo menos una partida que coincide con el alias
@@ -1038,6 +1030,42 @@ esperar();
 
 
 // ---------- PROCEDIMIENTOS Y FUNCIONES ----------
+
+//Función que muestra el nivel al jugador
+string mostrarNivel(Nivel nivel) {
+    switch (nivel) {
+        case PRINCIPIANTE:
+            cout << "Principiante" << endl;
+            break;
+        case INTERMEDIO:
+            cout << "Intermedio" << endl;
+            break;
+        case AVANZADO:
+            cout << "Avanzado" << endl;
+            break;
+        default:
+            cout << "Desconocido" << endl;
+            break;
+    }
+}
+
+//Función que muestra el resultado del juego
+string mostrarResultado(Resultado resultado) {
+    switch (resultado) {
+        case COMPLETADO:
+            cout << "Completado" << endl;
+            break;
+        case PERDIDO:
+            cout << "Perdido" << endl;
+            break;
+        case ABANDONADO:
+            cout << "Abandonado" << endl;
+            break;
+        default:
+            cout << "Desconocido" << endl;
+            break;
+    }
+}
 
 //Algoritmo burbuja de ordenamiento para puntajes (mayor a menor)
 void ordenarJugadoresPorPuntaje(Sistema &juego_actual) {
