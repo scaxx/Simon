@@ -1,7 +1,6 @@
 #include <iostream> 
-#include <chrono>
-#include <thread>
-#include <unistd.h>
+#include <chrono>  //Para hacer sleep_for
+#include <thread>  //Para hacer sleep_for
 #include <cstdlib> // Contiene rand y srand
 #include <ctime>   // Contiene time()
 
@@ -89,8 +88,7 @@ void imprimirJugador(Jugador j); //Procedimiento para imprimir al jugador selecc
 void editarJugador(Sistema &juego_actual); //Procedimiento para editar jugador
 void bajaJugador (Sistema &juego_actual); // Pasa el jugador de activo a inactivo
 void consultarJugador(Sistema juego_actual); //Procedimiento que imprime los datos del Alias consultado
-void listaDeJugadores(Sistema &juego_actual); //Procedimiento que despliega la lista de jugadores
-//void eliminarJugador(Sistema &juego_actual); //Procedimiento para eliminar jugador
+void listaDeJugadores(Sistema juego_actual); //Procedimiento que despliega la lista de jugadores
 
 //JUEGO
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); //Procedimiento que genera la secuencia aleatoria del juego
@@ -295,7 +293,7 @@ void informes(Sistema &juego_actual) {
 
         switch (opcionInformes) {
         case 1:
-            cout << "---- HISTORIAL DE PARTIDAS ----";
+            cout << "---- HISTORIAL DE PARTIDAS ----" << endl;
             mostrarHistorialPartidas(juego_actual);
             break;
         case 2:
@@ -439,7 +437,7 @@ void editarJugador(Sistema &juego_actual) {
     } else {
         //Validamos el estado del jugador encontrado
         if (juego_actual.jugadores[posicion].estado == false ) {
-            cout << "No puedes editar a otros jugadores. Vuelve a intentarlo" << endl;
+            cout << "El jugador " << aliasBuscado << " está inactivo y no puede ser modificado." << endl;
             esperar();
         } else {
             
@@ -527,7 +525,7 @@ void consultarJugador(Sistema juego_actual) {
 //LISTA DE JUGADORES
 
 // LISTADO DE LOS JUGADORES ACTIVOS EN ORDEN ALFABÉTICO
-void listaDeJugadores(Sistema &juego_actual) {
+void listaDeJugadores(Sistema juego_actual) {
      // VALIDACIÓN: Si no hay jugadores en el sistema
     if (juego_actual.cantJugadores == 0) {
         cout << "No hay ningún jugador registrado en el sistema." << endl;
@@ -536,7 +534,7 @@ void listaDeJugadores(Sistema &juego_actual) {
     } 
     //BUCLE DE ORDENAMIENTO BURBUJA 
     for ( int i = 0; i < juego_actual.cantJugadores - 1; i++){
-        for ( int j = 0; j < juego_actual.cantJugadores -1; j++){
+        for ( int j = 0; j < juego_actual.cantJugadores - 1; j++){
             if(juego_actual.jugadores[j].alias > juego_actual.jugadores[j+1].alias){
                 Jugador aux = juego_actual.jugadores[j]; //Uso aux para no perder ningún dato
                 juego_actual.jugadores[j] = juego_actual.jugadores[j+1]; //El de la derecha pasa a la izquierda
@@ -590,18 +588,17 @@ void comenzarPartida(Sistema &juego_actual){
         return; //corta y vuelve al menú principal
     } 
     if (juego_actual.jugadores[posicion].estado == false){
-        cout << "El jugador " << aliasBuscado << " se encuentra INACTIVO." << endl;
+        cout << "El jugador " << aliasBuscado << " se encuentra inactivo." << endl;
         cout << "No puedes jugar hasta volver a estar activo." << endl;
         cout << "En gestión de jugadores debes darte de alta." << endl;
         esperar();
         return; //corta y vuelve al menu principal
     }
 
-    cout << "¡Bienvenid@ de nuevo, " << juego_actual.jugadores[posicion].alias << "!" << endl;
-    esperar(); // El usuario presiona Enter acá para continuar
+    cout << "¡Bienvenid@, " << juego_actual.jugadores[posicion].alias << "!" << endl;
+    esperar(); // El usuario presiona una tecla acá para continuar
 
-    // NIVELES (Punto 5.1)
-
+    // NIVELES
     Nivel nivelElegido; 
 
     int largoDificultad;
@@ -664,8 +661,8 @@ void comenzarPartida(Sistema &juego_actual){
     Resultado resultadoFinal = PERDIDO;//Variable de tipo Resultado para saber cómo terminó (arranca en PERDIDO por defecto)
     bool sigueJugando = true;// 4. Bandera booleana para controlar si el juego debe continuar o detenerse
 
-    // Llenamos el arreglo secuenciaCreadaPartida con los colores aleatorios con la funcion
-    generarSecuenciaAleatoria(secuenciaCreadaPartida, largoDificultad);
+// Llenamos el arreglo secuenciaCreadaPartida con los colores aleatorios con la funcion
+generarSecuenciaAleatoria(secuenciaCreadaPartida, largoDificultad);
 
     for( int ronda = 1; ronda <= largoDificultad && sigueJugando == true; ronda++){
         system("clear");
@@ -678,16 +675,16 @@ void comenzarPartida(Sistema &juego_actual){
         cout << endl;
          
         // Hacemos una pausa y borramos pantalla 
-        cout << "[Presioná Enter cuando estés list@ para responder]";
-        esperar(); 
-        system("clear"); 
+        this_thread::sleep_for(chrono::milliseconds((int)(tiempoMuestra * 1000))); //Intentamos hacer la función como el ejemplo de clase
+        system("clear");                                                           //Pero no funcionó :(
 
         // Bucle que lee lo que el usuario ingresa
         cout << "=== TU TURNO ===" << endl;
         cout << "Ingresá los colores de uno en uno (R, V, A, N) o 'S' para abandonar." << endl;
         for (int k = 0; k < ronda; k++) {
             cout << "Color " << k + 1 << ": ";
-            cin >> secuenciaJugador[k];
+            cin >> secuenciaJugador[k]; //Leemos la secuencia con cin, no con getline para mayor comodidad (porque es array)
+            cin.ignore(); //Limpiamos el buffer para que el siguiente cin no tome el enter
             secuenciaJugador[k] = toupper(secuenciaJugador[k]); 
 
             // Control de Abandono 
@@ -701,7 +698,7 @@ void comenzarPartida(Sistema &juego_actual){
 
             // Control de Error
             if (secuenciaJugador[k] != secuenciaCreadaPartida[k]) {
-                cout << "¡Te equivocaste de color! Juego terminado." << endl;
+                cout << "¡Te equivocaste! Juego terminado." << endl;
                 esperar();
                 resultadoFinal = PERDIDO;
                 sigueJugando = false;
@@ -722,7 +719,7 @@ void comenzarPartida(Sistema &juego_actual){
             }
         }
 
-    } 
+} 
     Partida partida_nueva;
     
         //Rellenamos los campos de la estructura
@@ -770,7 +767,6 @@ void registrarPartida(Sistema &juego_actual, Partida partida_nueva) {
         juego_actual.cantPartidas++; //Aumentamos el contador de partidas
         
         int posicion = buscarJugador(juego_actual, partida_nueva.aliasJugador); //Buscamos la posición del jugador mediante su alias
-        juego_actual.partidas[posicion].puntajeObtenido += partida_nueva.puntajeObtenido; //Le sumo los puntos de la partida diferenciando al jugador mediante su alias
         cout << "¡Partida registrada con éxito!" << endl; //Mensaje para el jugador :)
 
     } else { //Si no hay lugar en el arreglo
@@ -1125,12 +1121,11 @@ bool sonNumeros(string s) {
 //Procedimiento general que utilizamos en casos de error
 void esperar() {
     string continuar;
-    cout << endl << "Presiona Enter para continuar...";
+    cout << endl << "Presiona cualquie tecla para continuar...";
     getline(cin, continuar);
+    this_thread::sleep_for(chrono::milliseconds(1500));
     system("clear");
-    sleep_for(milliseconds(1500));
-    system("clear");
-    return 0;
+    return;
 
 }
 
