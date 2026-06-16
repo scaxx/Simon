@@ -93,7 +93,7 @@ void listaDeJugadores(Sistema juego_actual); //Procedimiento que despliega la li
 //JUEGO
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); //Procedimiento que genera la secuencia aleatoria del juego
 void comenzarPartida (Sistema &juego_actual); //Procedimiento que comienza la partida
-bool validarEstadoJugador(Sistema &juego_actual, string aliasBuscado); //Función que valida que el jugador exista y esté activo
+bool validarEstadoJugador(Sistema &juego_actual, int posicion); //Función que valida que el jugador exista y esté activo
 void seleccionarNivel(Nivel &nivelElegido, int &largoDificultad, int &puntosPorRonda, float &timepoMuestra); //Procedimiento que muestra el menú de niveles y setea las variables de dificultad
 Resultado ejecutarRonda(char secuenciaCreadaPartida[], int ronda, float tiempoMuestra, int largoDificultad, int puntosPorRonda, int puntajeActual); //Función que ejecuta una ronda del juego y devuelve el resultado
 void registrarPartida(Sistema &juego_actual, Partida nueva_partida); //Procedimiento para registrar una partida en el arreglo partidas
@@ -688,9 +688,7 @@ void seleccionarNivel(Nivel &nivelElegido, int &largoDificultad, int &puntosPorR
 }
 
 //Validamos el estado del jugador para comenzar a jugar
-bool validarEstadoJugador(Sistema &juego_actual, string aliasBuscado) {
-    //Buscamos la posición del jugador en el arreglo
-    int posicion = buscarJugador(juego_actual, aliasBuscado);
+bool validarEstadoJugador(Sistema &juego_actual, int posicion) {
 
     //Devuelve true o false dependiendo del estado del jugador
     return juego_actual.jugadores[posicion].estado; //Devuelve un boolean, por eso no es necesario hacer un if 
