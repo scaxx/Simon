@@ -93,7 +93,7 @@ void listaDeJugadores(Sistema juego_actual); //Procedimiento que despliega la li
 //JUEGO
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); //Procedimiento que genera la secuencia aleatoria del juego
 void comenzarPartida (Sistema &juego_actual); //Procedimiento que comienza la partida
-bool validarEstadoJugador(Sistema &juego_actual, int posicion); //Función que valida que el jugador exista y esté activo
+bool validarEstadoJugador(Sistema &juego_actual, string aliasBuscado); //Función que valida que el jugador exista y esté activo
 void seleccionarNivel(Nivel &nivelElegido, int &largoDificultad, int &puntosPorRonda, float &timepoMuestra); //Procedimiento que muestra el menú de niveles y setea las variables de dificultad
 Resultado ejecutarRonda(char secuenciaCreadaPartida[], int ronda, float tiempoMuestra, int largoDificultad, int puntosPorRonda, int puntajeActual); //Función que ejecuta una ronda del juego y devuelve el resultado
 void registrarPartida(Sistema &juego_actual, Partida nueva_partida); //Procedimiento para registrar una partida en el arreglo partidas
@@ -194,12 +194,6 @@ void desplegarMenuPrincipal(Sistema &juego_actual) {
                 cout << "¡ERROR! Opción inválida. Vuelve a intentar con un número del 1 al 4." << endl;
                 esperar();
                 break;
-        }
-
-        if (opcion != 4) {
-            //esperar(); Para visualizar correctamente la opción seleccionada
-            // Por el momento lo comentamos para recordar que tenemos que realizar una función que espere un tiempo determinado antes de borrar pantalla
-            // Para que el jugador pueda visualizar los datos con éxito
         }
 
     } while (opcion != 4);
@@ -381,7 +375,6 @@ void agregar_jugador(Sistema &juego_actual) {
             juego_actual.jugadores[juego_actual.cantJugadores] = resultado;
             
             cout << "JUGADOR REGISTRADO CON ÉXITO" << endl;
-            //imprimirJugador(juego_actual.jugadores[juego_actual.cantJugadores]);
             
             juego_actual.cantJugadores++; // Sumamos 1 al contador de jugadores
         }
@@ -688,7 +681,9 @@ void seleccionarNivel(Nivel &nivelElegido, int &largoDificultad, int &puntosPorR
 }
 
 //Validamos el estado del jugador para comenzar a jugar
-bool validarEstadoJugador(Sistema &juego_actual, int posicion) {
+bool validarEstadoJugador(Sistema &juego_actual, string aliasBuscado) {
+    //Buscamos la posición del jugador en el arreglo
+    int posicion = buscarJugador(juego_actual, aliasBuscado);
 
     //Devuelve true o false dependiendo del estado del jugador
     return juego_actual.jugadores[posicion].estado; //Devuelve un boolean, por eso no es necesario hacer un if 
@@ -733,7 +728,8 @@ void comenzarPartida(Sistema &juego_actual){
     int puntosPorRonda;
     float tiempoMuestra;
 
-    seleccionarNivel(nivelElegido, largoDificultad, puntosPorRonda, tiempoMuestra);    cout << endl << "¡Nivel configurado con éxito!" << endl; 
+    seleccionarNivel(nivelElegido, largoDificultad, puntosPorRonda, tiempoMuestra);    
+    cout << endl << "¡Nivel configurado con éxito!" << endl; 
     esperar();
 
     // VARIABLES DEL JUEGO
@@ -914,54 +910,67 @@ void rankingGeneral(Sistema juego_actual) {
 
 //MEJOR JUGADOR POR NIVEL
 void mejorJugadorPorNivel (Sistema juego_actual){
-int maxPrincipiante = -1;
-string aliasPrincipiante = "";
+    //Definimos variables para buscar el máximo en cada nivel
+    int maxPrincipiante = -1;
+    string aliasPrincipiante = "";
 
-int maxIntermedio = -1;
-string aliasIntermedio = "";
+    int maxIntermedio = -1;
+    string aliasIntermedio = "";
 
-int maxAvanzado = -1;
-string aliasAvanzado = "";
+    int maxAvanzado = -1;
+    string aliasAvanzado = "";
 
-for (int i = 0 ; i < juego_actual.cantPartidas; i++ ){
-    if(juego_actual.partidas[i].nivel == PRINCIPIANTE){
-        if (juego_actual.partidas[i].puntajeObtenido > maxPrincipiante){
-            maxPrincipiante = juego_actual.partidas[i].puntajeObtenido;
-            aliasPrincipiante = juego_actual.partidas[i].aliasJugador;
+    //Recorremos el bucle de partidas
+    for (int i = 0 ; i < juego_actual.cantPartidas; i++ ){
+
+        //Buscamos el máximo en el nivel PRINCIPIANTE
+        if(juego_actual.partidas[i].nivel == PRINCIPIANTE){
+            if (juego_actual.partidas[i].puntajeObtenido > maxPrincipiante){
+                maxPrincipiante = juego_actual.partidas[i].puntajeObtenido;
+                aliasPrincipiante = juego_actual.partidas[i].aliasJugador;
+            }
         }
-    }
-    if (juego_actual.partidas[i].nivel == INTERMEDIO){
-        if(juego_actual.partidas[i].puntajeObtenido > maxIntermedio){
-            maxIntermedio= juego_actual.partidas[i].puntajeObtenido;
-            aliasIntermedio = juego_actual.partidas[i].aliasJugador;
-        } 
-    }
-    if (juego_actual.partidas[i].nivel == AVANZADO){
-        if(juego_actual.partidas[i].puntajeObtenido> maxAvanzado){
-            maxAvanzado = juego_actual.partidas[i].puntajeObtenido;
-            aliasAvanzado = juego_actual.partidas[i].aliasJugador;
+
+        //Buscamos el máximo en el nivel INTERMEDIO
+        if (juego_actual.partidas[i].nivel == INTERMEDIO){
+            if(juego_actual.partidas[i].puntajeObtenido > maxIntermedio){
+                maxIntermedio= juego_actual.partidas[i].puntajeObtenido;
+                aliasIntermedio = juego_actual.partidas[i].aliasJugador;
+            } 
         }
+
+        //Buscamos el máximo en el nivel AVANZADO
+        if (juego_actual.partidas[i].nivel == AVANZADO){
+            if(juego_actual.partidas[i].puntajeObtenido> maxAvanzado){
+                maxAvanzado = juego_actual.partidas[i].puntajeObtenido;
+                aliasAvanzado = juego_actual.partidas[i].aliasJugador;
+            }
+        }
+
     }
 
-}
-cout << "--- Mejores jugadores por NIVEL ---" << endl;
+    //Devolvemos los datos encontrados
+    cout << "--- Mejores jugadores por NIVEL ---" << endl;
+
     if (maxPrincipiante == -1){
         cout << "Nivel Principiante: No hay partidas registradas en este nivel." << endl;
-    }
-     else {
+    } else {
         cout << "Nivel Principiante: " << aliasPrincipiante << " con " << maxPrincipiante << "puntos." << endl;
-     }
- if (maxIntermedio == -1){
-        cout << "No hay jugadores que hayan jugado en este nivel" << endl;
- }else {
-        cout << "Nivel Intermedio: " << aliasIntermedio << " con " << maxIntermedio << "puntos." << endl;
-     }
-  if (maxAvanzado == -1){
-        cout << "No hay jugadores que hayan jugado en este nivel" << endl;
-    }else {
+    }
+
+    if (maxIntermedio == -1){
+            cout << "Nivel Intermedio: No hay partidas registradas en este nivel." << endl;
+    } else {
+            cout << "Nivel Intermedio: " << aliasIntermedio << " con " << maxIntermedio << "puntos." << endl;
+    }
+
+    if (maxAvanzado == -1){
+        cout << "Nivel Avanzado: No hay partidas registradas en este nivel." << endl;
+    } else {
         cout << "Nivel Avanzado: " << aliasAvanzado << " con " << maxAvanzado << "puntos." << endl;
-     }
-     esperar();
+    }
+
+    esperar();
 
 }
 
