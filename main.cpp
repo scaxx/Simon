@@ -612,7 +612,7 @@ Resultado ejecutarRonda(char secuenciaCreadaPartida[], int ronda, float tiempoMu
     //Verificamos colores y las secuencias
     for (int i = 0; i < ronda; i++) {
         if ((secuencia[i] != 'R' && secuencia[i] != 'V' && secuencia[i] != 'A' && secuencia[i] != 'N') || (secuencia[i] != secuenciaCreadaPartida[i])) {
-            cout << "¡Color incorrecto, ronda perdida!" << endl;
+            cout << "¡Incorrecto, ronda perdida!" << endl;
             esperar();
             return PERDIDO;
         }
