@@ -93,6 +93,9 @@ void listaDeJugadores(Sistema juego_actual); //Procedimiento que despliega la li
 //JUEGO
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad); //Procedimiento que genera la secuencia aleatoria del juego
 void comenzarPartida (Sistema &juego_actual); //Procedimiento que comienza la partida
+bool validarEstadoJugador(Sistema &juego_actual, string aliasBuscado); //Función que valida que el jugador exista y esté activo
+void seleccionarNivel(Nivel &nivelElegido, int &largoDificultad, int &puntosPorRonda, float &timepoMuestra); //Procedimiento que muestra el menú de niveles y setea las variables de dificultad
+Resultado ejecutarRonda(char secuenciaCreadaPartida[], int ronda, float tiempoMuestra); //Función que ejecuta una ronda del juego y devuelve el resultado
 void registrarPartida(Sistema &juego_actual, Partida nueva_partida); //Procedimiento para registrar una partida en el arreglo partidas
 
 // Sección de Informes
@@ -570,7 +573,123 @@ void listaDeJugadores(Sistema juego_actual) {
 
 // DESARROLLO DE PARTIDAS
 // PARA INICIAR UNA PARTIDA (Punto 5)
-void comenzarPartida(Sistema &juego_actual){
+void comenzarPartida(Sistema &juego_actual) {
+    //Agregar función
+}
+
+//Función que lleva adelante la ronda
+Resultado ejecutarRonda(char secuenciaCreadaPartida[], int ronda, float tiempoMuestra) {
+    system("clear");
+    cout << "=== RONDA " << ronda << " ===" << endl;
+    cout << "Simón dice: ";
+
+    //Mostramos la secuencia generada hasta la ronda actual
+    for (int i = 0; i < ronda; i++) {
+        cout << secuenciaCreadaPartida[i] << " "; 
+    }
+    cout << endl;
+
+    //Pausamos la pantalla según el float de la dificultad (multiplicado por 1000 para pasarlo a milisegundos enteros)
+    this_thread::sleep_for(chrono::milliseconds((int)(tiempoMuestra * 1000)));
+    system("clear");
+
+    //Turno de la entrada del usuario
+    cout << "=== TU TURNO ===" << endl;
+    cout << "Ingresá la secuencia de colores juntos (ej: RVAN) o 'S' para abandonar." << endl;
+
+    string secuencia;
+    getline(cin, secuencia); //Guardamos la respuesta del usuario
+
+    //Convertimos la respuesta del jugador a mayúsculas para evitar errores por minúsculas
+    for (int i = 0; i < secuencia.length(); i++) {
+        secuencia[i] = toupper(secuencia[i]);
+    }
+
+    //Si el jugador decide abandonar la partida
+    if (secuencia == "S") {
+        cout << "Abandonaste la partida :(" << endl;
+        esperar();
+        return ABANDONADO;
+    }
+
+    //Si el jugador ingresa menos caracteres de los esperados
+    if (secuencia.length() != ronda) {
+        cout << "¡Ronda perdida!" << endl;
+        esperar();
+        return PERDIDO;
+    }
+
+    //Verificamos colores y las secuencias
+    for (int i = 0; i < ronda; i++) {
+        if ((secuencia[i] != 'R' && secuencia[i] != 'V' && secuencia[i] != 'A' && secuencia[i] != 'N') || (secuencia[i] != secuenciaCreadaPartida[i])) {
+            cout << "¡Color incorrecto, ronda perdida!" << endl;
+            esperar();
+            return PERDIDO;
+        }
+    }
+    
+    //Si el ciclo termina, el jugador completa el nivel correctamente
+    return COMPLETADO;
+}
+
+//Procedimiento para seleccionar el nivel
+void seleccionarNivel(Nivel &nivelElegido, int &largoDificultad, int &puntosPorRonda, float &tiempoMuestra) {
+    //Variable para almacenar la opción del usuario
+    int opcionNivel;
+    
+    do {
+        //Limpiamos pantalla y mostramos las opciones al usuario
+        system("clear");
+        cout << "=== SELECCIONA EL NIVEL DE DIFICULTAD ===" << endl;
+        cout << "1. Principiante (Secuencia: 6, Puntos: 1, Tiempo: 1.5s)" << endl;
+        cout << "2. Intermedio   (Secuencia: 8, Puntos: 3, Tiempo: 1.3s)" << endl;
+        cout << "3. Avanzado     (Secuencia: 10, Puntos: 5, Tiempo: 1.0s)" << endl;
+        cout << "Opción: ";
+
+        //Leemos la entrada y la guardamos en opcionNivel
+        opcionNivel = leerEntrada();
+
+        //Bucle para las opciones disponibles
+        switch (opcionNivel) {
+        case 1:
+                nivelElegido = PRINCIPIANTE; // Selecciona el nivel principiante
+                largoDificultad = LARGO_PRINCIPIANTE;
+                puntosPorRonda = PTS_PRINCIPIANTE;
+                tiempoMuestra = TIEMPO_PRINCIPIANTE;
+                break;
+            case 2:
+                nivelElegido = INTERMEDIO;  // Selecciona el nivel medio
+                largoDificultad = LARGO_INTERMEDIO;
+                puntosPorRonda = PTS_INTERMEDIO;
+                tiempoMuestra = TIEMPO_INTERMEDIO;
+                break;
+            case 3:
+                nivelElegido = AVANZADO;    // Selecciona el nivel avanzado
+                largoDificultad = LARGO_AVANZADO;
+                puntosPorRonda = PTS_AVANZADO;
+                tiempoMuestra = TIEMPO_AVANZADO;
+                break;
+                //En caso de que se ingrese algo diferente a lo esperado
+            default: 
+                cout << "¡Opción inválida! Por favor, selecciona 1, 2 o 3." << endl;
+                esperar(); 
+                break;
+        }
+        
+    } while (opcionNivel != 1 && opcionNivel != 2 && opcionNivel != 3);
+}
+
+//Validamos el estado del jugador para comenzar a jugar
+bool validarEstadoJugador(Sistema &juego_actual, string aliasBuscado) {
+    //Buscamos la posición del jugador en el arreglo
+    int posicion = buscarJugador(juego_actual, aliasBuscado);
+
+    //Devuelve true o false dependiendo del estado del jugador
+    return juego_actual.jugadores[posicion].estado; //Devuelve un boolean, por eso no es necesario hacer un if 
+
+}
+
+/*void comenzarPartida(Sistema &juego_actual){
     system("clear");
     cout << "Iniciando la partida de SIMON" << endl;
 
@@ -602,7 +721,7 @@ void comenzarPartida(Sistema &juego_actual){
     Nivel nivelElegido; 
     int largoDificultad;
     int puntosPorRonda;
-    double tiempoMuestra;
+    float tiempoMuestra;
     int opcionNivel;
     bool nivelValido = false;
 
@@ -752,7 +871,7 @@ void comenzarPartida(Sistema &juego_actual){
     cout << "Gracias por jugar a SIMÓN DICE. Volviendo al menú principal..." << endl;
     esperar();
 
-}
+}*/
 
 // Función que llena el arreglo de la secuencia con colores aleatorios
 void generarSecuenciaAleatoria (char secuencia[], int largoDificultad){
@@ -777,7 +896,6 @@ void generarSecuenciaAleatoria (char secuencia[], int largoDificultad){
     }
 
 }
-
 
 // REGISTRO DE PARTIDAS
 void registrarPartida(Sistema &juego_actual, Partida partida_nueva) {
@@ -1102,9 +1220,11 @@ void ordenarJugadoresPorPuntaje(Sistema &juego_actual) {
 }
 
 //Función que se utliza para chequear que los campos dentro de los formularios sean válidos
-//REVISAR
 bool verificarCampoInvalido(string s) {
 
+    //Verificamos que el campo no contenga lo siguiente
+    //Es poco probable que s tenga un largo de 0 porque tanto enter como espacio serían 1,
+    //Pero lo hacemos en caso de que ocurra algún error inesperado
     if (s.length() == 0 || s == " " || s == "\n") {
         
         cout << "Este campo no puede permanecer vacío." << endl;
@@ -1114,7 +1234,7 @@ bool verificarCampoInvalido(string s) {
 
     }
 
-    return false; //El campo no está vacío, entonces continúa
+    return false; //El campo es válido, entonces continúa
 
 }
 
@@ -1157,10 +1277,12 @@ bool pedirAlias (Sistema &juego_actual, Jugador &j) {
 
     do {
 
-        system("clear");
-        cout << "Ingresa tu alias: ";
-        getline(cin, j.alias);
-        verificarCampoInvalido(j.alias);
+        do {
+
+            system("clear");
+            cout << "Ingresa tu alias: ";
+            getline(cin, j.alias);
+        } while (verificarCampoInvalido(j.alias));
 
         int posicionAlias = buscarJugador(juego_actual, j.alias);
 
