@@ -955,19 +955,19 @@ void mejorJugadorPorNivel (Sistema juego_actual){
     if (maxPrincipiante == -1){
         cout << "Nivel Principiante: No hay partidas registradas en este nivel." << endl;
     } else {
-        cout << "Nivel Principiante: " << aliasPrincipiante << " con " << maxPrincipiante << "puntos." << endl;
+        cout << "Nivel Principiante: " << aliasPrincipiante << " con " << maxPrincipiante << " puntos." << endl;
     }
 
     if (maxIntermedio == -1){
-            cout << "Nivel Intermedio: No hay partidas registradas en este nivel." << endl;
+        cout << "Nivel Intermedio: No hay partidas registradas en este nivel." << endl;
     } else {
-            cout << "Nivel Intermedio: " << aliasIntermedio << " con " << maxIntermedio << "puntos." << endl;
+        cout << "Nivel Intermedio: " << aliasIntermedio << " con " << maxIntermedio << " puntos." << endl;
     }
 
     if (maxAvanzado == -1){
         cout << "Nivel Avanzado: No hay partidas registradas en este nivel." << endl;
     } else {
-        cout << "Nivel Avanzado: " << aliasAvanzado << " con " << maxAvanzado << "puntos." << endl;
+        cout << "Nivel Avanzado: " << aliasAvanzado << " con " << maxAvanzado << " puntos." << endl;
     }
 
     esperar();
@@ -1000,26 +1000,26 @@ void estadisticasGenerales(Sistema juego_actual){
     for(int i = 0; i<juego_actual.cantPartidas; i++){
         sumaPuntajes += juego_actual.partidas[i].puntajeObtenido;
         if(juego_actual.partidas[i].resultado == COMPLETADO ){  // PORCENTAJE DE PARTIDAS GANADAS (seguimos adentro del for)
-        partidasGanadas++;
+            partidasGanadas++;
         }
-
         if (juego_actual.partidas[i].nivel == PRINCIPIANTE){
             cantPrin++;
-        }if (juego_actual.partidas[i].nivel == INTERMEDIO){
+        }
+        if (juego_actual.partidas[i].nivel == INTERMEDIO){
             cantInt++;
-        }if (juego_actual.partidas[i].nivel == AVANZADO){
+        }
+        if (juego_actual.partidas[i].nivel == AVANZADO){
             cantAva++;
         }
     }
     
     if (juego_actual.cantPartidas == 0){
-        cout << "Aún no se han jugado partidas" << endl;
+        cout << "Promedio de puntaje: Aún no se han jugado partidas" << endl;
     } else {
         cout << "El promedio de puntajes es: " << (float)sumaPuntajes / juego_actual.cantPartidas << endl; //agrego float por si da con coma
         cout << "El porcentaje de partidas ganadas es: " << (float)partidasGanadas * 100 / juego_actual.cantPartidas << endl;
     }
 
-    //Habría que revisar esta parte porque creo que se puede dividir en otra función
     // Declaramos las variables para operar
     string nivelMasJugado = "";
     int maxPartidasNivel = 0;
@@ -1044,7 +1044,7 @@ void estadisticasGenerales(Sistema juego_actual){
 
     //Si el juego no tiene partidas aún
     if (juego_actual.cantPartidas == 0) {
-        cout << "Aún no se ha jugado ninguna partida" << endl;
+        cout << "Nivel más jugado: Aún no se ha jugado ninguna partida" << endl;
         esperar();
         return;
     } else { //Si tenemos un nivel máximo
